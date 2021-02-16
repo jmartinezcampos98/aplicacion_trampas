@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<datos_puntos>
+    <punto id="0">
+        <color>red</color>
+        <nombre>Salón</nombre>
+        <coordX>10.6</coordX>
+        <coordY>43.89</coordY>
+    </punto>
+    <punto id="1">
+        <color>green</color>
+        <nombre>Dormitorio</nombre>
+        <coordX>81</coordX>
+        <coordY>60.1</coordY>
+    </punto>
+    <punto id="2">
+        <color>yellow</color>
+        <nombre>Cocina</nombre>
+        <coordX>415</coordX>
+        <coordY>100</coordY>
+    </punto>
+    <punto id="3">
+        <color>red</color>
+        <nombre>Verde</nombre>
+        <coordX>200</coordX>
+        <coordY>50</coordY>
+    </punto>
+</datos_puntos>
