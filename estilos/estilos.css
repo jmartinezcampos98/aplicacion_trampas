@@ -6,9 +6,15 @@
 }
 
 .punto_redondo {
-    height: 25px;
-    width: 25px;
+    height: 15px;
+    width: 15px;
     border-radius: 50%;
     display: inline-block;
+    position: absolute;
+}
+
+.puntos {
+    color: black;
+    background-color: white;
     position: absolute;
 }
