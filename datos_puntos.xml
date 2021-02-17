@@ -9,7 +9,7 @@
     <punto id="1">
         <color>#008000</color>
         <nombre>Dormitorio</nombre>
-        <xCoord>81</xCoord>
+        <xCoord>500</xCoord>
         <yCoord>60.1</yCoord>
     </punto>
     <punto id="2">
