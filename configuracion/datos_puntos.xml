@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuracion>
+    <instalacion seq="1">
+        <id_instalacion>HORCHATERIA_PAQUITA</id_instalacion>
+        <id_cliente>11223344B</id_cliente>
+        <lugar_cliente>PAQUITA SANCHEZ</lugar_cliente>
+        <id_imagen>IMG_HORCHATERIA_INTERIOR</id_imagen>
+        <puntos>
+            <punto numero="1">
+                <color>#ff0000</color>
+                <lugar>ENTRADA</lugar>
+                <xCoord>106</xCoord>
+                <yCoord>439</yCoord>
+            </punto>
+            <punto numero="2">
+                <color>#008000</color>
+                <lugar>ALMACEN</lugar>
+                <xCoord>601</xCoord>
+                <yCoord>81</yCoord>
+            </punto>
+        </puntos>
+    </instalacion>
+    <instalacion seq="2">
+        <id_instalacion>CASA_PAQUITA</id_instalacion>
+        <id_cliente>11223344B</id_cliente>
+        <lugar_cliente>PAQUITA SANCHEZ</lugar_cliente>
+        <id_imagen>IMG_CASA</id_imagen>
+        <puntos>
+            <punto numero="1">
+                <color>#ff0000</color>
+                <lugar>PATIO</lugar>
+                <xCoord>265</xCoord>
+                <yCoord>76</yCoord>
+            </punto>
+            <punto numero="2">
+                <color>#008000</color>
+                <lugar>DORMITORIO</lugar>
+                <xCoord>12</xCoord>
+                <yCoord>54</yCoord>
+            </punto>
+        </puntos>
+    </instalacion>
+</configuracion>
