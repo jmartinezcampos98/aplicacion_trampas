@@ -8,9 +8,21 @@
     <div>
         <?php
         // Comprueba si existe entrada POST
-        //
-        $input_id_instalacion = "BODEGAS_VEGAMAR_BAJO";
-        $input_id_cliente = "12345678Z";
+        $input_post = isset($_POST['cliente']) ? $_POST['cliente'] : null;
+        $post_inputs = explode(':', $input_post);
+        // Si carga desde borrar o insertar
+        if (isset($_POST["id_cliente"]) && isset($_POST["id_instalacion"])) {
+            $input_id_cliente = $_POST["id_cliente"];
+            $input_id_instalacion = $_POST["id_instalacion"];
+        // Si carga desde "Recargar"
+        } else if (count($post_inputs) == 2) {
+            $input_id_cliente = $post_inputs[0];
+            $input_id_instalacion = $post_inputs[1];
+        // Si no tenemos información POST
+        } else {
+            $input_id_cliente = null;
+            $input_id_instalacion = null;
+        }
         //
         // Conecta a base de datos
         require_once("conexion.php");
@@ -46,7 +58,7 @@
         //
         $div_imagen = '<div class="simple">';
         if ($dato_imagen) {
-            $div_imagen .= '<img class="imagen_plano" src="data:image/jpg;base64,'.base64_encode($dato_imagen['imagen']).'"/>';
+            $div_imagen .= '<img class="imagen_plano" src="data:image/jpg;base64,'.base64_encode($dato_imagen).'"/>';
         } else {
             $div_imagen .= '<img class="imagen_plano" src="imagenes/no_imagen.jpeg"/>';
             $div_imagen .= '<span class="texto_imagen">No hay imagen</span>';
@@ -106,26 +118,41 @@
         </form>
 
         <?php
-        if ($dato_imagen) {
-            echo('<span class="margen_izquierda"><b>Puede actualizar la imagen de la instalacion ' . $input_id_instalacion . ' a partir de un fichero en su equipo.</b></span>');
-        } else {
-            echo('<span class="margen_izquierda"><b>No existe imagen en base de datos. Puede insertarla a partir de un fichero en su equipo.</b></span>');
+        // Si se ha indicado un cliente e instalacion a través de POST
+        if ($input_id_cliente != null && $input_id_instalacion != null) {
+            // Si la instalación en cuestión tiene una imagen vinculada
+            if ($dato_imagen) {
+                echo('<span class="margen_izquierda"><b>Puede actualizar la imagen de la instalacion ' . $input_id_instalacion . ' a partir de un fichero en su equipo.</b></span>');
+            } else {
+                echo('<span class="margen_izquierda"><b>No existe imagen en base de datos. Puede insertarla a partir de un fichero en su equipo.</b></span>');
+            }
+            echo('
+                <form class="margen_izquierda" action="proceso_guardar.php" method="POST" enctype="multipart/form-data">
+                    <input type="file" required name="imagen"/>
+                    <input type="hidden" name="id_cliente" value="' . $input_id_cliente . '"/>
+                    <input type="hidden" name="id_instalacion" value="' . $input_id_instalacion . '"/>
+                    <input type="submit" value="Aceptar"/>
+                </form>');
+            // Si hay imagen vinculada, se puede borrar
+            if ($dato_imagen) {
+                echo('
+                    <form class="margen_izquierda" action="proceso_borrar.php" method="POST">
+                        <label>Puedes borrar la imagen actual pulsando este botón:</label>
+                        <input type="hidden" name="id_cliente" value="' . $input_id_cliente . '"/>
+                        <input type="hidden" name="id_instalacion" value="' . $input_id_instalacion . '"/>
+                        <input type="submit" value="Borrar imagen de instalación" 
+                            onclick="return confirm(' . addslashes("Si borras la imagen, se borrarán también los puntos asignados a esta.") . ')"/>
+                    </form>');
+            }
         }
         ?>
-        <form class="margen_izquierda" action="proceso_guardar.php" method="POST" enctype="multipart/form-data">
-            <input type="file" required name="imagen"/>
-            <input type="hidden" name="id_cliente" value="<?= $input_id_cliente ?>"/>
-            <input type="hidden" name="id_instalacion" value="<?= $input_id_instalacion ?>"/>
-            <input type="submit" value="Aceptar"/>
-        </form>
-
         <?php
         if ($dato_imagen) {
             echo('
                 <div class="margen_izquierda">
                     <button onclick="crear()">Crear punto</button>
-                    <button>Actualizar BD</button>
-                    <button>Exportar PDF</button>
+                    <button>Guardar estado</button>
+                    </br><button style="margin-top: 5px">Exportar PDF</button>
                 </div>
             ');
         }

@@ -22,5 +22,6 @@ function obtener_imagen(PDO $conexion, $id_instalacion)
                     FROM instalaciones ins LEFT JOIN imagenes img ON ins.id_instalacion = img.id_instalacion
                     WHERE ins.id_instalacion = '" . $id_instalacion . "'");
     $consulta->execute();
-    return $consulta->fetch(PDO::FETCH_ASSOC);
+    $array_con_imagen = $consulta->fetch(PDO::FETCH_ASSOC);
+    return isset($array_con_imagen['imagen']) ? $array_con_imagen['imagen'] : null;
 }

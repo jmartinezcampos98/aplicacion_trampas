@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
 <configuracion>
     <instalacion seq="1">
         <id_instalacion>HORCHATERIA_PAQUITA</id_instalacion>
         <id_cliente>11223344B</id_cliente>
         <nombre_cliente>PAQUITA SANCHEZ</nombre_cliente>
-        <id_imagen>IMG_HORCHATERIA_INTERIOR</id_imagen>
+        <imagen>IMG_HORCHATERIA_INTERIOR</imagen>
         <puntos>
             <punto numero="1">
                 <color>#ff0000</color>
