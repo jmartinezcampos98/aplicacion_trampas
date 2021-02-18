@@ -10,15 +10,19 @@ var cont = 0;
 var vectorInputs = [];
 var vectorInputsName = [];
 
-function crear(){
+function crear() {
+    crear(0, 0);
+}
+
+function crear(left, top){
 
     var nuevo = document.createElement("div");
     nuevo.id="d"+cont;
     nuevo.style.position = "absolute";
-    nuevo.style.left = "0px";
-    nuevo.style.top = "0px";
-    nuevo.style.width = "20px";
-    nuevo.style.height = "20px";
+    nuevo.style.left = left + "px";
+    nuevo.style.top = top + "px";
+    nuevo.style.width = "15px";
+    nuevo.style.height = "15px";
     nuevo.style.background = "red";
     nuevo.style.color = "blue";
     nuevo.style.borderRadius="50%";

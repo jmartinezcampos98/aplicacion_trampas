@@ -4,7 +4,7 @@
     <instalacion seq="1">
         <id_instalacion>HORCHATERIA_PAQUITA</id_instalacion>
         <id_cliente>11223344B</id_cliente>
-        <lugar_cliente>PAQUITA SANCHEZ</lugar_cliente>
+        <nombre_cliente>PAQUITA SANCHEZ</nombre_cliente>
         <id_imagen>IMG_HORCHATERIA_INTERIOR</id_imagen>
         <puntos>
             <punto numero="1">
@@ -24,7 +24,7 @@
     <instalacion seq="2">
         <id_instalacion>CASA_PAQUITA</id_instalacion>
         <id_cliente>11223344B</id_cliente>
-        <lugar_cliente>PAQUITA SANCHEZ</lugar_cliente>
+        <nombre_cliente>PAQUITA SANCHEZ</nombre_cliente>
         <id_imagen>IMG_CASA</id_imagen>
         <puntos>
             <punto numero="1">
