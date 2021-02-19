@@ -37,9 +37,7 @@
         $instalaciones = array();
 
         for ($i = 0; $i < count($datos_instalaciones); $i++) {
-            // $datos_puntos = obtener_puntos($datos_instalaciones[$i]["id_instalacion"]);
-            // $dato_imagen = obtener_imagen($datos_instalaciones[$i]["id_instalacion"]);
-
+            //
             $instalacion = array(
                 "id_instalacion" => $datos_instalaciones[$i]["id_instalacion"],
                 "id_cliente" => $datos_instalaciones[$i]["id_cliente"],
@@ -48,14 +46,14 @@
 
             array_push($instalaciones, $instalacion);
         }
-        // Si hay post intenta obtener la imagen
+        // Si hay POST, intenta obtener la imagen y los puntos
         $dato_imagen = null;
         $datos_puntos = array();
         if ($input_id_instalacion) {
             $dato_imagen = obtener_imagen($conexion, $input_id_instalacion);
             $datos_puntos = obtener_puntos($conexion, $input_id_instalacion);
         }
-        //
+        // Dibuja la imagen
         $div_imagen = '<div class="simple">';
         if ($dato_imagen) {
             $div_imagen .= '<img class="imagen_plano" src="data:image/jpg;base64,'.base64_encode($dato_imagen).'"/>';
@@ -68,29 +66,15 @@
         ?>
     <div/>
     <div>
-        <?php
-            $xml = simplexml_load_file('datos_puntos.xml');
-            $json = json_encode($xml);
-            $array = json_decode($json,TRUE);
-        ?>
 
+        <?php
+        // Carga los datos escritos en xml
+        $xml = simplexml_load_file('datos_puntos.xml');
+        $json = json_encode($xml);
+        $array = json_decode($json,TRUE);
+        ?>
         <br/>
 
-        <?php
-        /*
-            foreach ($array["punto"] as $punto) {
-                $identificador = $id_instalacion_configurada . ':' . $punto["@attributes"]["id"];
-                $xCoord = $punto["xCoord"];
-                $yCoord = $punto["yCoord"];
-                $color = $punto["color"];
-                $nombre = $punto["nombre"];
-                echo('<div id="' . $identificador . '" style="position: absolute; top:' . $yCoord . 'px; left: ' . ($xCoord + 15) . 'px;">');
-                echo('<span class="dot punto_redondo" style="background-color: ' . $color . ';"></span>');
-                echo('<span class="texto_puntos">' . $nombre . '</span>');
-                echo('</div>');
-            }
-        */
-        ?>
         <form action="index.php" method="POST">
             <span>&nbsp;&nbsp;&nbsp;</span><label for="cliente">Elige el cliente y la instalación:</label>
             <select name="cliente" id="cliente">
@@ -151,7 +135,7 @@
             echo('
                 <div class="margen_izquierda">
                     <button onclick="crear()">Crear punto</button>
-                    <button>Guardar estado</button>
+                    <button onclick="guardarPuntos()">Guardar estado</button> <span id="estadoGuardar"></span>
                     </br><button style="margin-top: 5px">Exportar PDF</button>
                 </div>
             ');
@@ -159,6 +143,26 @@
         ?>
 
     </div>
+    <div id="puntosPantalla">
 
+    </div>
+    <div>
+        <?php
+        if ($input_id_instalacion) {
+
+            foreach ($datos_puntos as $punto) {
+                $id_instalacion = $punto["id_instalacion"];
+                $xCoord = $punto["x_coord"];
+                $yCoord = $punto["y_coord"];
+                $color = $punto["color"];
+                $nombre = $punto["lugar"];
+                echo ('<script type="text/javascript"> crear('
+                    . $xCoord . ', ' . $yCoord . ', "'
+                    . $color . '", "' . $nombre . '", "' . $id_instalacion
+                    . '"); </script>');
+            }
+        }
+        ?>
+    </div>
 </body>
 </html>

@@ -25,3 +25,25 @@ function obtener_imagen(PDO $conexion, $id_instalacion)
     $array_con_imagen = $consulta->fetch(PDO::FETCH_ASSOC);
     return isset($array_con_imagen['imagen']) ? $array_con_imagen['imagen'] : null;
 }
+
+function borrar_puntos_instalacion(PDO $conexion, $id_instalacion)
+{
+    $borrado = $conexion->prepare(" " .
+        "DELETE FROM puntos " .
+        "WHERE id_instalacion = '" . $id_instalacion . "'");
+    $borrado->execute();
+}
+
+function insertar_puntos(PDO $conexion, $num_punto, $id_instalacion, $x_coord, $y_coord, $lugar, $color)
+{
+    $insercion = $conexion->prepare(
+        "INSERT INTO PUNTOS (NUM_PUNTO, ID_INSTALACION, X_COORD, Y_COORD, LUGAR, COLOR) VALUES "
+        . "('$num_punto',"
+        . "'$id_instalacion',"
+        . "'$x_coord',"
+        . "'$y_coord',"
+        . "'$lugar',"
+        . "'$color')"
+    );
+    $insercion->execute();
+}

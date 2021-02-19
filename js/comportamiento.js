@@ -9,48 +9,95 @@ var tagFlags = [];
 var cont = 0;
 var vectorInputs = [];
 var vectorInputsName = [];
+var coordPuntos = []
 
 function crear() {
-    crear(0, 0);
+    crear(0, 0, "red", "Almacén", "Horchateria Paquita");
 }
 
-function crear(left, top){
+function crear(left, top, color, name, instalacion){
 
-    var nuevo = document.createElement("div");
-    nuevo.id="d"+cont;
-    nuevo.style.position = "absolute";
-    nuevo.style.left = left + "px";
-    nuevo.style.top = top + "px";
-    nuevo.style.width = "15px";
-    nuevo.style.height = "15px";
-    nuevo.style.background = "red";
-    nuevo.style.color = "blue";
-    nuevo.style.borderRadius="50%";
-    nuevo.className=cont;
+    // var nuevo = document.getElementById("puntosPantalla").appendChild("div");
+
+    var divTodosLosPuntos = document.getElementById("puntosPantalla");
+    var divPunto = document.createElement("div");
+
+
+    divPunto.id="d"+cont;
+    divPunto.style.position = "absolute";
+    divPunto.style.left = left + "px";
+    divPunto.style.top = top + "px";
+    divPunto.style.width = "15px";
+    divPunto.style.height = "15px";
+    divPunto.style.background = color;
+    divPunto.style.color = "blue";
+    divPunto.style.borderRadius="50%";
+    divPunto.className=cont;
 
     var isDown = false;
     tagFlags.push(isDown);
 
-    nuevo.addEventListener('mousedown', function(e) {
-        tagFlags[nuevo.className] = true;
+    divPunto.addEventListener('mousedown', function(e) {
+        tagFlags[divPunto.className] = true;
         //tagFlags.push(true);
-        console.log("MouseDown");
-        console.log(tagFlags);
-        console.log(nuevo.className);
+
         offset = [
-            nuevo.offsetLeft - e.clientX,
-            nuevo.offsetTop - e.clientY
+            divPunto.offsetLeft - e.clientX,
+            divPunto.offsetTop - e.clientY
         ];
 
     }, true);
-    tagElements.push(nuevo);
-    document.body.appendChild(nuevo);
+
+    divPunto.innerHTML =
+        '<span class="dot punto_redondo" style="background-color: ' + color + ';"></span>'
+        + '<span class="texto_puntos">' + name + '</span>'
+    ;
+
+    divTodosLosPuntos.appendChild(divPunto);
+
+    coordPuntos.push({
+        x : left,
+        y : top,
+        color : color,
+        name : name,
+        number : cont,
+        instalacion : instalacion
+    });
+
+    tagElements.push(divPunto);
     cont++;
 }
 
-document.addEventListener('mouseup', function() {
+function guardarPuntos() {
+    let cadenaEnvio = "";
+    for (i = 0; i < coordPuntos.length; i++) {
+        // orden de parametros -> $num_punto, $id_instalacion, $x_coord, $y_coord, $lugar, $color
+        cadenaEnvio += (coordPuntos[i].number + ":" + coordPuntos[i].instalacion + ":" + coordPuntos[i].x + ":" + coordPuntos[i].y + ":" + coordPuntos[i].name + ":" + coordPuntos[i].color);
+        // Si no es el último punto, añade uno más
+        if (i !== coordPuntos.length - 1) {
+            cadenaEnvio += "+";
+        }
+    }
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            const date = new Date();
+            document.getElementById("estadoGuardar").innerHTML = this.responseText + ", a las "
+                + date.getHours() + "h " + date.getMinutes() + "min " + date.getSeconds() + "s ";
+        }
+    }
+    xhttp.open("GET", "ajax.php?q=" + encodeURIComponent(cadenaEnvio), true);
+    xhttp.send();
+}
+
+document.addEventListener('mouseup', function(event) {
     var i;
     for (i = 0; i < tagFlags.length; i++) {
+        if (tagFlags[i]) {
+            coordPuntos[i].x = event.clientX + offset[0];
+            coordPuntos[i].y = event.clientY + offset[1];
+        }
         tagFlags[i]=false;
     }
 }, true);
@@ -61,26 +108,20 @@ document.addEventListener('mousemove', function(event) {
     for (i = 0; i < tagFlags.length; i++) {
         if (tagFlags[i]) {
 
-            console.log("event move log");
-            console.log(i);
-            console.log(tagElements);
             mousePosition = {
 
                 x : event.clientX,
                 y : event.clientY
 
             };
-            console.log(tagElements[i]);
-            console.log(i);
-            console.log(tagElements);
 
             tagElements[i].style.left = (mousePosition.x + offset[0]) + 'px';
             tagElements[i].style.top  = (mousePosition.y + offset[1]) + 'px';
-            x_input.value = (mousePosition.x + offset[0]) + 'px';
-            y_input.value = (mousePosition.y + offset[1]) + 'px';
+            // x_input.value = (mousePosition.x + offset[0]) + 'px';
+            // y_input.value = (mousePosition.y + offset[1]) + 'px';
 
-            tagLabels[i].style.left = (mousePosition.x + offset[0]) + 'px';
-            tagLabels[i].style.top  = (mousePosition.y + offset[1] - 20) + 'px';
+            // tagLabels[i].style.left = (mousePosition.x + offset[0]) + 'px';
+            // tagLabels[i].style.top  = (mousePosition.y + offset[1] - 20) + 'px';
         }
     }
 }, true);
