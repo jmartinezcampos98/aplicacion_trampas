@@ -20,14 +20,25 @@ span.texto_puntos {
     color: black;
     background-color: white;
     position: relative;
+    bottom: 15px;
 }
 
 span.punto_redondo {
-    height: 15px;
-    width: 15px;
     border-radius: 50%;
     display: inline-block;
     position: relative;
+}
+
+span.interior {
+    height: 15px;
+    width: 15px;
+    top: -17px;
+    left: 2px;
+}
+
+span.exterior {
+    height: 19px;
+    width: 19px;
 }
 
 .margen_izquierda {

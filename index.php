@@ -134,7 +134,7 @@
         if ($dato_imagen) {
             echo('
                 <div class="margen_izquierda">
-                    <button onclick="crear()">Crear punto</button>
+                    <button onclick="crearVacio(\'' . $input_id_instalacion . '\')">Crear punto</button>
                     <button onclick="guardarPuntos()">Guardar estado</button> <span id="estadoGuardar"></span>
                     </br><button style="margin-top: 5px">Exportar PDF</button>
                 </div>

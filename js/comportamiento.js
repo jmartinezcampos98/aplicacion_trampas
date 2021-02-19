@@ -11,8 +11,8 @@ var vectorInputs = [];
 var vectorInputsName = [];
 var coordPuntos = []
 
-function crear() {
-    crear(0, 0, "red", "Almacén", "Horchateria Paquita");
+function crearVacio(instalacion) {
+    crear(0, 0, "red", "Almacén", instalacion);
 }
 
 function crear(left, top, color, name, instalacion){
@@ -29,9 +29,7 @@ function crear(left, top, color, name, instalacion){
     divPunto.style.top = top + "px";
     divPunto.style.width = "15px";
     divPunto.style.height = "15px";
-    divPunto.style.background = color;
     divPunto.style.color = "blue";
-    divPunto.style.borderRadius="50%";
     divPunto.className=cont;
 
     var isDown = false;
@@ -49,7 +47,8 @@ function crear(left, top, color, name, instalacion){
     }, true);
 
     divPunto.innerHTML =
-        '<span class="dot punto_redondo" style="background-color: ' + color + ';"></span>'
+        '<span class="dot punto_redondo exterior" style="background-color: white;"></span>'
+        + '<span class="dot punto_redondo interior" style="background-color: ' + color + ';"></span>'
         + '<span class="texto_puntos">' + name + '</span>'
     ;
 
