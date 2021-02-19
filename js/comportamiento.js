@@ -10,6 +10,7 @@ var cont = 0;
 var vectorInputs = [];
 var vectorInputsName = [];
 var coordPuntos = []
+var puntoSeleccionado = null;
 
 function crearVacio(instalacion) {
     crear(0, 0, "red", "Almacén", instalacion);
@@ -35,17 +36,6 @@ function crear(left, top, color, name, instalacion){
     var isDown = false;
     tagFlags.push(isDown);
 
-    divPunto.addEventListener('mousedown', function(e) {
-        tagFlags[divPunto.className] = true;
-        //tagFlags.push(true);
-
-        offset = [
-            divPunto.offsetLeft - e.clientX,
-            divPunto.offsetTop - e.clientY
-        ];
-
-    }, true);
-
     divPunto.innerHTML =
         '<span class="dot punto_redondo exterior" style="background-color: white;"></span>'
         + '<span class="dot punto_redondo interior" style="background-color: ' + color + ';"></span>'
@@ -65,29 +55,24 @@ function crear(left, top, color, name, instalacion){
 
     tagElements.push(divPunto);
     cont++;
-}
 
-function guardarPuntos() {
-    let cadenaEnvio = "";
-    for (i = 0; i < coordPuntos.length; i++) {
-        // orden de parametros -> $num_punto, $id_instalacion, $x_coord, $y_coord, $lugar, $color
-        cadenaEnvio += (coordPuntos[i].number + ":" + coordPuntos[i].instalacion + ":" + coordPuntos[i].x + ":" + coordPuntos[i].y + ":" + coordPuntos[i].name + ":" + coordPuntos[i].color);
-        // Si no es el último punto, añade uno más
-        if (i !== coordPuntos.length - 1) {
-            cadenaEnvio += "+";
-        }
-    }
+    divPunto.addEventListener('mousedown', function(e) {
+        tagFlags[divPunto.className] = true;
+        //tagFlags.push(true);
 
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            const date = new Date();
-            document.getElementById("estadoGuardar").innerHTML = this.responseText + ", a las "
-                + date.getHours() + "h " + date.getMinutes() + "min " + date.getSeconds() + "s ";
-        }
-    }
-    xhttp.open("GET", "ajax.php?q=" + encodeURIComponent(cadenaEnvio), true);
-    xhttp.send();
+        //
+        puntoSeleccionado = divPunto;
+        // boton eliminar punto deja de estar desactivado
+        // actualiza parametros
+        // seleccionar lista color y activarla
+
+        //
+        offset = [
+            divPunto.offsetLeft - e.clientX,
+            divPunto.offsetTop - e.clientY
+        ];
+
+    }, true);
 }
 
 document.addEventListener('mouseup', function(event) {
@@ -124,3 +109,46 @@ document.addEventListener('mousemove', function(event) {
         }
     }
 }, true);
+
+function actualizaParametrosPunto() {
+    // cambia texto coordX
+    // cambia texto coordY
+    // cambia texto lugar
+    // cambia seleccionable option color
+}
+
+function eliminarPunto() {
+    puntoSeleccionado = null;
+    // seleccionar boton eliminar y desactivarlo
+    // seleccionar lista color y desactivarla
+    // enviar orden para borrar de base de datos
+    // actualizar el html para quitarlo
+    // actualiza parametros
+}
+
+function cambiarColor() {
+    // actualiza el color del punto seleccionado
+}
+
+function guardarPuntos() {
+    let cadenaEnvio = "";
+    for (i = 0; i < coordPuntos.length; i++) {
+        // orden de parametros -> $num_punto, $id_instalacion, $x_coord, $y_coord, $lugar, $color
+        cadenaEnvio += (coordPuntos[i].number + ":" + coordPuntos[i].instalacion + ":" + coordPuntos[i].x + ":" + coordPuntos[i].y + ":" + coordPuntos[i].name + ":" + coordPuntos[i].color);
+        // Si no es el último punto, añade uno más
+        if (i !== coordPuntos.length - 1) {
+            cadenaEnvio += "+";
+        }
+    }
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            const date = new Date();
+            document.getElementById("estadoGuardar").innerHTML = this.responseText + ", a las "
+                + date.getHours() + "h " + date.getMinutes() + "min " + date.getSeconds() + "s ";
+        }
+    }
+    xhttp.open("GET", "ajax.php?q=" + encodeURIComponent(cadenaEnvio), true);
+    xhttp.send();
+}

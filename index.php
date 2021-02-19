@@ -79,7 +79,6 @@
             <span>&nbsp;&nbsp;&nbsp;</span><label for="cliente">Elige el cliente y la instalación:</label>
             <select name="cliente" id="cliente">
                 <?php
-                // falta hacer que se seleccione por defecto la que venía
                 if ($input_id_instalacion) {
                     echo('<option value=""></option>');
                 } else {
@@ -136,7 +135,25 @@
                 <div class="margen_izquierda">
                     <button onclick="crearVacio(\'' . $input_id_instalacion . '\')">Crear punto</button>
                     <button onclick="guardarPuntos()">Guardar estado</button> <span id="estadoGuardar"></span>
-                    </br><button style="margin-top: 5px">Exportar PDF</button>
+                    </br></br><form class="margen_arriba">
+                        <label for="coordenadaX">Coord X</label>
+                        <input disabled type="text" name="coordenadaX" value="" size="5"/>
+                        <label for="coordenadaY" style="position:relative; left: 20px;">Coord Y</label>
+                        <input disabled type="text" name="coordenadaY" value="" style="position:relative; left: 20px;" size="5"/>
+                        </br></br>
+                        <label for="lugar">Lugar</label>
+                        <input type="text" name="lugar" value="" size="30" maxlength="30"/>
+                        </br></br>
+                        <label for="color">Color</label>
+                        <select name="color" id="seleccionableColor" onchange="cambiarColor()">
+                            <option disabled selected="selected" value=""></option>
+                            <option value="#008000">Verde</option>
+                            <option value="#ffff00">Amarillo</option>
+                            <option value="#ff0000">Rojo</option>
+                        </select>
+                    </form>
+                    <button disabled onclick="eliminarPunto()" >ELIMINAR PUNTO</button>
+                    </br></br><button style="margin-top: 5px">Exportar PDF</button>
                 </div>
             ');
         }
@@ -144,12 +161,10 @@
 
     </div>
     <div id="puntosPantalla">
-
     </div>
-    <div>
+    <div id="inicializacionPuntos">
         <?php
-        if ($input_id_instalacion) {
-
+        if ($dato_imagen) {
             foreach ($datos_puntos as $punto) {
                 $id_instalacion = $punto["id_instalacion"];
                 $xCoord = $punto["x_coord"];

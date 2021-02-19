@@ -45,3 +45,8 @@ span.exterior {
     position:relative;
     left: 10px;
 }
+
+.margen_arriba {
+    position:relative;
+    top: 5px;
+}
