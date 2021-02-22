@@ -8,16 +8,20 @@
     <div>
         <?php
         // Comprueba si existe entrada POST
-        $input_post = isset($_POST['cliente']) ? $_POST['cliente'] : null;
-        $post_inputs = explode(':', $input_post);
-        // Si carga desde borrar o insertar
+        $instalacion_seleccionada = isset($_POST['cliente_instalacion']) ? $_POST['cliente_instalacion'] : null;
+        $parametros_post = explode(':', $instalacion_seleccionada);
+        // Si carga desde borrar o insertar imagen
         if (isset($_POST["id_cliente"]) && isset($_POST["id_instalacion"])) {
             $input_id_cliente = $_POST["id_cliente"];
             $input_id_instalacion = $_POST["id_instalacion"];
-        // Si carga desde "Recargar"
-        } else if (count($post_inputs) == 2) {
-            $input_id_cliente = $post_inputs[0];
-            $input_id_instalacion = $post_inputs[1];
+        // Si carga desde crear instalacion
+        } else if (isset($_POST["nombre_cliente_creado"]) && isset($_POST["id_cliente_creado"]) && isset($_POST["instalacion_creada"])) {
+            $input_id_cliente = $_POST["id_cliente_creado"];
+            $input_id_instalacion = $_POST["instalacion_creada"];
+        // Si carga desde "Cargar"
+        } else if (count($parametros_post) == 2) {
+            $input_id_cliente = $parametros_post[0];
+            $input_id_instalacion = $parametros_post[1];
         // Si no tenemos información POST
         } else {
             $input_id_cliente = null;
@@ -75,9 +79,9 @@
         ?>
         <br/>
 
-        <form action="index.php" method="POST">
-            <span>&nbsp;&nbsp;&nbsp;</span><label for="cliente">Elige el cliente y la instalación:</label>
-            <select name="cliente" id="cliente">
+        <form class="margen_izquierda" action="index.php" method="POST">
+            <label for="cliente_instalacion">Elige el cliente y la instalación:</label>
+            <select name="cliente_instalacion" id="cliente_instalacion">
                 <?php
                 if ($input_id_instalacion) {
                     echo('<option value=""></option>');
@@ -97,7 +101,20 @@
                 }
                 ?>
             </select><span>&nbsp;&nbsp;&nbsp;</span>
-            <input type="submit" value="Recargar">
+            <input type="submit" value="Cargar">
+        </form>
+
+        <form class="margen_izquierda" action="crear_instalacion.php" method="POST">
+            <label >Crea nueva instalación</label><input class="margen_izquierda" type="submit" value="Crear">
+            <div style="height: 8px"></div>
+            <label for="nombre_cliente_creado">Nombre cliente:</label>
+            <input required type="text" name="nombre_cliente_creado" value="" size="60" maxlength="50" style="left: 110px; position: absolute"/>
+            <div style="height: 8px"></div>
+            <label for="id_cliente_creado">Id. cliente:</label>
+            <input required type="text" name="id_cliente_creado" value="" size="60" maxlength="50" style="left: 110px; position: absolute"/>
+            <div style="height: 8px"></div>
+            <label for="instalacion_creada">Instalación:</label>
+            <input required type="text" name="instalacion_creada" value="" size="60" maxlength="50" style="left: 110px; position: absolute"/>
         </form>
 
         <?php
@@ -110,7 +127,7 @@
                 echo('<span class="margen_izquierda"><b>No existe imagen en base de datos. Puede insertarla a partir de un fichero en su equipo.</b></span>');
             }
             echo('
-                <form class="margen_izquierda" action="proceso_guardar.php" method="POST" enctype="multipart/form-data">
+                <form class="margen_izquierda" action="guardar_imagen.php" method="POST" enctype="multipart/form-data">
                     <input type="file" required name="imagen"/>
                     <input type="hidden" name="id_cliente" value="' . $input_id_cliente . '"/>
                     <input type="hidden" name="id_instalacion" value="' . $input_id_instalacion . '"/>
@@ -119,14 +136,22 @@
             // Si hay imagen vinculada, se puede borrar
             if ($dato_imagen) {
                 echo('
-                    <form class="margen_izquierda" action="proceso_borrar.php" method="POST">
-                        <label>Puedes borrar la imagen actual pulsando este botón:</label>
+                    <form class="margen_izquierda" action="borrar_imagen.php" method="POST">
+                        <label>Puede borrar la imagen actual pulsando este botón:</label>
                         <input type="hidden" name="id_cliente" value="' . $input_id_cliente . '"/>
                         <input type="hidden" name="id_instalacion" value="' . $input_id_instalacion . '"/>
                         <input type="submit" value="Borrar imagen de instalación" 
                             onclick="return confirm(' . addslashes("Si borras la imagen, se borrarán también los puntos asignados a esta.") . ')"/>
                     </form>');
             }
+            echo('
+                <form class="margen_izquierda" action="borrar_instalacion.php" method="POST">
+                    <label>Puede borrar la instalación actual pulsando este botón:</label>
+                    <input type="hidden" name="id_cliente_borrado" value="' . $input_id_cliente . '"/>
+                    <input type="hidden" name="instalacion_borrada" value="' . $input_id_instalacion . '"/>
+                    <input type="submit" value="BORRAR INSTALACIÓN"
+                        onclick="return confirm(' . addslashes("SE BORRARÁN TODOS LOS DATOS DE ESTA INSTALACIÓN.") . ')"/>
+                </form>');
         }
         ?>
         <?php
