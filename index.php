@@ -8,13 +8,13 @@
     <div>
         <?php
         // Comprueba si existe entrada POST
-        $input_post = isset($_POST['cliente']) ? $_POST['cliente'] : null;
+        $input_post = isset($_POST['cliente_instalacion']) ? $_POST['cliente_instalacion'] : null;
         $post_inputs = explode(':', $input_post);
-        // Si carga desde borrar o insertar
+        // Si carga desde borrar o insertar imagen
         if (isset($_POST["id_cliente"]) && isset($_POST["id_instalacion"])) {
             $input_id_cliente = $_POST["id_cliente"];
             $input_id_instalacion = $_POST["id_instalacion"];
-        // Si carga desde "Recargar"
+        // Si carga desde "Cargar"
         } else if (count($post_inputs) == 2) {
             $input_id_cliente = $post_inputs[0];
             $input_id_instalacion = $post_inputs[1];
@@ -76,8 +76,8 @@
         <br/>
 
         <form action="index.php" method="POST">
-            <span>&nbsp;&nbsp;&nbsp;</span><label for="cliente">Elige el cliente y la instalación:</label>
-            <select name="cliente" id="cliente">
+            <label class="margen_izquierda" for="cliente_instalacion">Elige el cliente y la instalación:</label>
+            <select name="cliente_instalacion" id="cliente_instalacion">
                 <?php
                 if ($input_id_instalacion) {
                     echo('<option value=""></option>');
@@ -97,7 +97,7 @@
                 }
                 ?>
             </select><span>&nbsp;&nbsp;&nbsp;</span>
-            <input type="submit" value="Recargar">
+            <input type="submit" value="Cargar">
         </form>
 
         <?php
@@ -110,7 +110,7 @@
                 echo('<span class="margen_izquierda"><b>No existe imagen en base de datos. Puede insertarla a partir de un fichero en su equipo.</b></span>');
             }
             echo('
-                <form class="margen_izquierda" action="proceso_guardar.php" method="POST" enctype="multipart/form-data">
+                <form class="margen_izquierda" action="guardar_imagen.php" method="POST" enctype="multipart/form-data">
                     <input type="file" required name="imagen"/>
                     <input type="hidden" name="id_cliente" value="' . $input_id_cliente . '"/>
                     <input type="hidden" name="id_instalacion" value="' . $input_id_instalacion . '"/>
@@ -119,8 +119,8 @@
             // Si hay imagen vinculada, se puede borrar
             if ($dato_imagen) {
                 echo('
-                    <form class="margen_izquierda" action="proceso_borrar.php" method="POST">
-                        <label>Puedes borrar la imagen actual pulsando este botón:</label>
+                    <form class="margen_izquierda" action="borrar_imagen.php" method="POST">
+                        <label>Puede borrar la imagen actual pulsando este botón:</label>
                         <input type="hidden" name="id_cliente" value="' . $input_id_cliente . '"/>
                         <input type="hidden" name="id_instalacion" value="' . $input_id_instalacion . '"/>
                         <input type="submit" value="Borrar imagen de instalación" 

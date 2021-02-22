@@ -1,8 +1,4 @@
-
 <?php
-
-// el proceso de guardar debería estar presente en una página de configuración específica, para no alterar
-// los otros procesos
 
 include("conexion.php");
 
@@ -16,8 +12,6 @@ $resultado = $conexion_datos ->query($borrado);
 //
 if ($resultado) {
     echo "BORRADO CON ÉXITO";
-} else {
-    echo "MÁS SUERTE LA PRÓXIMA VEZ";
 }
 
 header('HTTP/1.1 307 Temporary Redirect');
