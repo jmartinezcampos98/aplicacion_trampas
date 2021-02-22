@@ -75,8 +75,8 @@
         ?>
         <br/>
 
-        <form action="index.php" method="POST">
-            <label class="margen_izquierda" for="cliente_instalacion">Elige el cliente y la instalación:</label>
+        <form  class="margen_izquierda" action="index.php" method="POST">
+            <label for="cliente_instalacion">Elige el cliente y la instalación:</label>
             <select name="cliente_instalacion" id="cliente_instalacion">
                 <?php
                 if ($input_id_instalacion) {
@@ -114,7 +114,7 @@
                     <input type="file" required name="imagen"/>
                     <input type="hidden" name="id_cliente" value="' . $input_id_cliente . '"/>
                     <input type="hidden" name="id_instalacion" value="' . $input_id_instalacion . '"/>
-                    <input type="submit" value="Aceptar"/>
+                    <input type="submit" value="Actualizar imagen"/>
                 </form>');
             // Si hay imagen vinculada, se puede borrar
             if ($dato_imagen) {
@@ -133,27 +133,13 @@
         if ($dato_imagen) {
             echo('
                 <div class="margen_izquierda">
-                    <button onclick="crearVacio(\'' . $input_id_instalacion . '\')">Crear punto</button>
-                    <button onclick="guardarPuntos()">Guardar estado</button> <span id="estadoGuardar"></span>
-                    </br></br><form class="margen_arriba">
-                        <label for="coordenadaX">Coord X</label>
-                        <input disabled type="text" name="coordenadaX" value="" size="5"/>
-                        <label for="coordenadaY" style="position:relative; left: 20px;">Coord Y</label>
-                        <input disabled type="text" name="coordenadaY" value="" style="position:relative; left: 20px;" size="5"/>
-                        </br></br>
-                        <label for="lugar">Lugar</label>
-                        <input type="text" name="lugar" value="" size="30" maxlength="30"/>
-                        </br></br>
-                        <label for="color">Color</label>
-                        <select name="color" id="seleccionableColor" onchange="cambiarColor()">
-                            <option disabled selected="selected" value=""></option>
-                            <option value="#008000">Verde</option>
-                            <option value="#ffff00">Amarillo</option>
-                            <option value="#ff0000">Rojo</option>
-                        </select>
+                    <button onclick="guardarPuntos()">Guardar estado puntos</button> <span id="estadoGuardar"></span>
+                    <form class="margen_arriba" action="pagina_exportar_pdf.php" method="POST">
+                        <input type="hidden" name="id_cliente" value="' . $input_id_cliente . '"/>
+                        <input type="hidden" name="id_instalacion" value="' . $input_id_instalacion . '"/>
+                        <input type="submit" value="Exportar PDF">
                     </form>
-                    <button disabled onclick="eliminarPunto()" >ELIMINAR PUNTO</button>
-                    </br></br><button style="margin-top: 5px">Exportar PDF</button>
+                    
                 </div>
             ');
         }

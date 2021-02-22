@@ -43,10 +43,25 @@ span.exterior {
 
 .margen_izquierda {
     position:relative;
-    left: 10px;
+    margin-left: 10px;
 }
 
 .margen_arriba {
     position:relative;
-    top: 5px;
+    margin-top: 5px;
+}
+
+.margen_abajo {
+    position:relative;
+    margin-bottom: 5px;
+}
+
+.doble_margen_abajo {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+input.fecha {
+    width: 50px;
+    text-align: right;
 }

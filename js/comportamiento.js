@@ -152,3 +152,54 @@ function guardarPuntos() {
     xhttp.open("GET", "ajax.php?q=" + encodeURIComponent(cadenaEnvio), true);
     xhttp.send();
 }
+
+function validDateFormat(dateVal){
+
+    if (dateVal == null) {
+        return false;
+    }
+
+    const validatePattern = /^(\d{4})(\/|-)(\d{1,2})(\/|-)(\d{1,2})$/;
+
+    let dateValues = dateVal.match(validatePattern);
+
+    if (dateValues == null) {
+        return false;
+    }
+
+    const dtYear = Number(dateValues[1]);
+    let dtMonth = Number(dateValues[3]);
+    let dtDay = Number(dateValues[5]);
+
+    if (dtMonth < 1 || dtMonth > 12) {
+        return false;
+    } else if (dtDay < 1 || dtDay> 31) {
+        return false;
+    } else if ((dtMonth===4 || dtMonth===6 || dtMonth===9 || dtMonth===11) && dtDay ===31) {
+        return false;
+    } else if (dtMonth === 2) {
+        const isleap = (dtYear % 4 === 0 && (dtYear % 100 !== 0 || dtYear % 400 === 0));
+        if (dtDay> 29 || (dtDay ===29 && !isleap))
+            return false;
+    }
+
+    return true;
+}
+
+function validateNumber(event) {
+    const theEvent = event;
+
+    // Handle paste
+    if (theEvent.type === 'paste') {
+        key = event.clipboardData.getData('text/plain');
+    } else {
+        // Handle key press
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode(key);
+    }
+    var regex = /[0-9]|\./;
+    if( !regex.test(key) ) {
+        theEvent.returnValue = false;
+        if(theEvent.preventDefault) theEvent.preventDefault();
+    }
+}
