@@ -134,7 +134,7 @@ function guardarPuntos() {
     let cadenaEnvio = "";
     for (i = 0; i < coordPuntos.length; i++) {
         // orden de parametros -> $num_punto, $id_instalacion, $x_coord, $y_coord, $lugar, $color
-        cadenaEnvio += (coordPuntos[i].number + ":" + coordPuntos[i].instalacion + ":" + coordPuntos[i].x + ":" + coordPuntos[i].y + ":" + coordPuntos[i].name + ":" + coordPuntos[i].color);
+        cadenaEnvio += (coordPuntos[i].number + ":" + coordPuntos[i].instalacion + ":" + coordPuntos[i].x + ":" + coordPuntos[i].y + ":" + coordPuntos[i].name);
         // Si no es el último punto, añade uno más
         if (i !== coordPuntos.length - 1) {
             cadenaEnvio += "+";

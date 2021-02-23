@@ -10,8 +10,8 @@ if (isset($puntos[0])) {
 }
 foreach ($puntos as $punto) {
     $datos = explode(':', $punto);
-    // $conexion, $num_punto, $id_instalacion, $x_coord, $y_coord, $lugar, $color
-    insertar_puntos($conexion, $datos[0], $datos[1], $datos[2], $datos[3], $datos[4], $datos[5]);
+    // $conexion, $num_punto, $id_instalacion, $x_coord, $y_coord, $lugar
+    insertar_puntos($conexion, $datos[0], $datos[1], $datos[2], $datos[3], $datos[4]);
 }
 
 

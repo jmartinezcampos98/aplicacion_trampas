@@ -155,11 +155,25 @@
                 $id_instalacion = $punto["id_instalacion"];
                 $xCoord = $punto["x_coord"];
                 $yCoord = $punto["y_coord"];
-                $color = $punto["color"];
+                $color_dato = $punto["color"];
+                switch ($color_dato) {
+                    case 2:
+                        // Verde
+                        $color_hex = "#008000";
+                        break;
+                    case 1:
+                        // Amarillo
+                        $color_hex = "#FFFF00";
+                        break;
+                    default:
+                        // Rojo
+                        $color_hex = "#FF0000";
+                        break;
+                }
                 $nombre = $punto["lugar"];
                 echo ('<script type="text/javascript"> crear('
                     . $xCoord . ', ' . $yCoord . ', "'
-                    . $color . '", "' . $nombre . '", "' . $id_instalacion
+                    . $color_hex . '", "' . $nombre . '", "' . $id_instalacion
                     . '"); </script>');
             }
         }
