@@ -33,7 +33,7 @@
         $anyo = $fecha_actual["year"];
 
         echo(
-            '<form id="input_fechas" class="margen_izquierda" action="pagina_exportar_pdf.php" method="POST">
+            '<form id="input_fechas" class="margen_izquierda" action="test.php" method="POST" target="_blank">
                 <div class="margen_abajo">
                     <div class="margen_abajo">
                         <label>Fecha de inicio</label>
@@ -91,7 +91,11 @@
                 return false;
             });
         </script>
+
+
+
         <?php
+        /*
         use Dompdf\Dompdf;
         require_once "dompdf/autoload.inc.php";
         $dompdf = new Dompdf();
@@ -123,16 +127,16 @@
 </body>
 </html>');
 
-/*
+
         $customPaper = array(3,-40,450,540);
         $dompdf->set_paper($customPaper);
 
-*/
+
 
         $dompdf->render();
 
         $dompdf->stream("PA03-PR04-F02.pdf");
-        /*
+
 
         $output = $dompdf->output();
 

@@ -66,13 +66,6 @@
         ?>
     <div/>
     <div>
-
-        <?php
-        // Carga los datos escritos en xml
-        $xml = simplexml_load_file('datos_puntos.xml');
-        $json = json_encode($xml);
-        $array = json_decode($json,TRUE);
-        ?>
         <br/>
 
         <form  class="margen_izquierda" action="index.php" method="POST">
