@@ -9,28 +9,23 @@ use Dompdf\Dompdf;
 $dompdf = new Dompdf();
 
 $plantilla2 = new ImpresionTrampas();
-$plantilla = new test_class();
 
 $conexion = abrir_conexion();
-
 $datos = array(
     "imagen" => obtener_imagen($conexion, 'BODEGAS_VEGAMAR_BAJO'),
     "cliente" => "PAQUITA CHURRA",
-    "instalacion" => "CHURRERÍA_TÍA_PAQUITA"
+    "instalacion" => "CHURRERÍA_TÍA_PAQUITA",
+    "puntos" => obtener_puntos($conexion, 'BODEGAS_VEGAMAR_BAJO')
 );
 
-//$dompdf->loadHtml($plantilla->parsePagina());
-$pagina = $plantilla2->parsePagina($datos);
-
-$dompdf->loadHtml($pagina);
+$dompdf->loadHtml($plantilla2->parsePagina($datos));
 
 // (Optional) Setup the paper size and orientation
-$dompdf->setPaper('A4', 'portrait');
+//$dompdf2->setPaper('A4', 'landscape');
+$dompdf->setPaper([0, 0, 1000, 800]);
 
 // Render the HTML as PDF
 $dompdf->render();
 
 // Output the generated PDF to Browser
 $dompdf->stream();
-
-echo($pagina);
