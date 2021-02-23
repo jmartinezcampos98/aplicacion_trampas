@@ -1,6 +1,5 @@
 <?php
 require_once "dompdf/autoload.inc.php";
-require_once "test_class.php";
 require_once "conexion.php";
 require_once "ImpresionTrampas.php";
 use Dompdf\Dompdf;
@@ -8,17 +7,21 @@ use Dompdf\Dompdf;
 // instantiate and use the dompdf class
 $dompdf = new Dompdf();
 
-$plantilla2 = new ImpresionTrampas();
+$plantilla = new ImpresionTrampas();
+
+$input_id_cliente = $_POST['id_cliente'];
+$input_nombre_cliente = $_POST['nombre_cliente'];
+$input_instalacion = $_POST['id_instalacion'];
 
 $conexion = abrir_conexion();
 $datos = array(
-    "imagen" => obtener_imagen($conexion, 'BODEGAS_VEGAMAR_BAJO'),
-    "cliente" => "PAQUITA CHURRA",
-    "instalacion" => "CHURRERÍA_TÍA_PAQUITA",
-    "puntos" => obtener_puntos($conexion, 'BODEGAS_VEGAMAR_BAJO')
+    "imagen" => obtener_imagen($conexion, $input_instalacion),
+    "cliente" => $input_nombre_cliente,
+    "instalacion" => $input_instalacion,
+    "puntos" => obtener_puntos($conexion, $input_instalacion)
 );
 
-$dompdf->loadHtml($plantilla2->parsePagina($datos));
+$dompdf->loadHtml($plantilla->parsePagina($datos));
 
 // (Optional) Setup the paper size and orientation
 //$dompdf2->setPaper('A4', 'landscape');

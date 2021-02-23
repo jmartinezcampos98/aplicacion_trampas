@@ -23,6 +23,7 @@
             $input_id_cliente = null;
             $input_id_instalacion = null;
         }
+        $input_nombre_cliente = null;
         //
         // Conecta a base de datos
         require_once("conexion.php");
@@ -43,7 +44,12 @@
                 "id_cliente" => $datos_instalaciones[$i]["id_cliente"],
                 "nombre_cliente" => $datos_instalaciones[$i]["nombre_cliente"],
             );
-
+            //
+            if ((isset($input_id_cliente) && isset($input_id_instalacion)) &&
+                $input_id_cliente == $instalacion["id_cliente"] && $input_id_instalacion == $instalacion["id_instalacion"]) {
+                $input_nombre_cliente = $instalacion["nombre_cliente"];
+            }
+            //
             array_push($instalaciones, $instalacion);
         }
         // Si hay POST, intenta obtener la imagen y los puntos
@@ -129,6 +135,7 @@
                     <button onclick="guardarPuntos()">Guardar estado puntos</button> <span id="estadoGuardar"></span>
                     <form class="margen_arriba" action="pagina_exportar_pdf.php" method="POST">
                         <input type="hidden" name="id_cliente" value="' . $input_id_cliente . '"/>
+                        <input type="hidden" name="nombre_cliente" value="' . $input_nombre_cliente . '"/>
                         <input type="hidden" name="id_instalacion" value="' . $input_id_instalacion . '"/>
                         <input type="submit" value="Exportar PDF">
                     </form>

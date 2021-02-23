@@ -17,6 +17,7 @@
         $conexion_datos = abrir_conexion();
         // Obtiene las variables del formulario
         $input_id_cliente = $_POST['id_cliente'];
+        $input_nombre_cliente = $_POST['nombre_cliente'];
         $input_instalacion = $_POST['id_instalacion'];
 
         echo(
@@ -27,19 +28,21 @@
             </form>'
         );
 
+        echo('<h3 class="margen_izquierda">Cliente e instalación a exportar: ' . $input_nombre_cliente . ', ' . $input_instalacion . '</h3>');
+
         $fecha_actual = getdate();
         $dia = $fecha_actual["mday"];
         $mes = $fecha_actual["mon"];
         $anyo = $fecha_actual["year"];
 
         echo(
-            '<form id="input_fechas" class="margen_izquierda" action="test.php" method="POST" target="_blank">
+            '<form id="input_fechas" class="margen_izquierda" action="accion_imprimir.php" method="POST" target="_blank">
                 <div class="margen_abajo">
                     <div class="margen_abajo">
                         <label>Fecha de inicio</label>
                     </div>
                     <label for="dia_inicio">Día: </label>
-                    <input id="dia_inicio" required type="text" name="dia_inicio" maxlength="2" class="fecha" value="'. $dia . '"/>
+                    <input id="dia_inicio" required type="text" name="dia_inicio" maxlength="2" class="fecha" value="' . $dia . '"/>
                     <label for="mes_inicio">Mes: </label>
                     <input id="mes_inicio" required type="text" name="mes_inicio" maxlength="2" class="fecha" value="'. $mes . '"/>
                     <label for="anyo_inicio">Año: </label>
@@ -56,6 +59,9 @@
                     <label for="anyo_fin">Año: </label>
                     <input id="anyo_fin" required type="text" name="anyo_fin" maxlength="4" class="fecha" value="'. $anyo . '"/>
                 </div>
+                <input type="hidden" name="id_cliente" value="' . $input_id_cliente . '"/>
+                <input type="hidden" name="id_instalacion" value="' . $input_instalacion . '"/>
+                <input type="hidden" name="nombre_cliente" value="' . $input_nombre_cliente . '"/>
                 <input class="margen_arriba" id="generar_pdf" required type="submit" value="Generar PDF">
             </form>
             <script>
@@ -91,59 +97,6 @@
                 return false;
             });
         </script>
-
-
-
-        <?php
-        /*
-        use Dompdf\Dompdf;
-        require_once "dompdf/autoload.inc.php";
-        $dompdf = new Dompdf();
-
-        $URI= 'https://localhost/aplicacion_trampas/';
-        $url= $URI.'plantilla_imprimir.php';
-
-        $data=array(
-            'id_cliente' => $input_id_cliente,
-            'instalacion' => $input_instalacion
-        );
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-
-        $result = curl_exec($ch);
-
-        curl_close($ch);
-
-        $dompdf->loadHtml('<html>
-<head>
-
-</head>
-<body>
-    <h1>HOLA</h1>
-</body>
-</html>');
-
-
-        $customPaper = array(3,-40,450,540);
-        $dompdf->set_paper($customPaper);
-
-
-
-        $dompdf->render();
-
-        $dompdf->stream("PA03-PR04-F02.pdf");
-
-
-        $output = $dompdf->output();
-
-        $hoy = date("F_j_Y");
-        $file_name = 'Factura_TRAKTA_web_templat_'.$hoy.'.pdf';
-        file_put_contents($file_name, $output);*/
-        ?>
     </div>
 </body>
 </html>
