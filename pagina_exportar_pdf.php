@@ -16,12 +16,12 @@
         // Conecta a base de datos
         $conexion_datos = abrir_conexion();
         // Obtiene las variables del formulario
-        $input_id = $_POST['id_cliente'];
+        $input_id_cliente = $_POST['id_cliente'];
         $input_instalacion = $_POST['id_instalacion'];
 
         echo(
             '<form class="margen_izquierda" action="index.php" method="POST">
-                <input type="hidden" name="id_cliente" value="' . $input_id . '"/>
+                <input type="hidden" name="id_cliente" value="' . $input_id_cliente . '"/>
                 <input type="hidden" name="id_instalacion" value="' . $input_instalacion . '"/>
                 <input type="submit" value="Volver a panel de control"/>
             </form>'
@@ -92,9 +92,53 @@
             });
         </script>
         <?php
+        use Dompdf\Dompdf;
         require_once "dompdf/autoload.inc.php";
         $dompdf = new Dompdf();
 
+        $URI= 'https://localhost/aplicacion_trampas/';
+        $url= $URI.'plantilla_imprimir.php';
+
+        $data=array(
+            'id_cliente' => $input_id_cliente,
+            'instalacion' => $input_instalacion
+        );
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+        $result = curl_exec($ch);
+
+        curl_close($ch);
+
+        $dompdf->loadHtml('<html>
+<head>
+
+</head>
+<body>
+    <h1>HOLA</h1>
+</body>
+</html>');
+
+/*
+        $customPaper = array(3,-40,450,540);
+        $dompdf->set_paper($customPaper);
+
+*/
+
+        $dompdf->render();
+
+        $dompdf->stream("PA03-PR04-F02.pdf");
+        /*
+
+        $output = $dompdf->output();
+
+        $hoy = date("F_j_Y");
+        $file_name = 'Factura_TRAKTA_web_templat_'.$hoy.'.pdf';
+        file_put_contents($file_name, $output);*/
         ?>
     </div>
 </body>

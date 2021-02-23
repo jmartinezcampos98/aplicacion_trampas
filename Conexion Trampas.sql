@@ -72,3 +72,33 @@ INSERT INTO PUNTOS (ID_INSTALACION, COLOR, X_COORD, Y_COORD, NUM_PUNTO, LUGAR) V
 ('BODEGAS_VEGAMAR_PATIO','#ffff00',254,200,4,'ESCALERAS');
 
 DELETE FROM PUNTOS WHERE COLOR = 'red';
+
+
+-- solo el último registro
+SELECT ins.id_instalacion, p.num_punto, p.lugar, p.color, p.x_coord, p.y_coord
+FROM instalaciones ins, puntos p
+WHERE ins.id_instalacion = p.id_instalacion AND ins.id_instalacion = 'BODEGAS_VEGAMAR_BAJO' AND
+    p.fecha = (SELECT MAX(fecha) FROM puntos)
+ORDER BY INS.ID_CLIENTE, INS.ID_INSTALACION, P.NUM_PUNTO
+;
+
+
+-- una media de todos los registros
+SELECT 
+    ins.id_instalacion, 
+    p.num_punto, 
+    AVG(p.x_coord),
+    AVG(p.x_coord)
+FROM instalaciones ins, puntos p
+WHERE ins.id_instalacion = p.id_instalacion AND ins.id_instalacion = 'BODEGAS_VEGAMAR_BAJO'
+    
+GROUP BY ID_INSTALACION, NUM_PUNTO
+ORDER BY INS.ID_CLIENTE, INS.ID_INSTALACION, P.NUM_PUNTO
+;
+
+SELECT 0 FROM PUNTOS WHERE COLOR = '#ff0000' AND;
+SELECT 0.5 FROM PUNTOS WHERE COLOR = '#ffff00';
+SELECT 1 FROM PUNTOS WHERE COLOR = '#008000';
+
+CREATE VIEW
+
