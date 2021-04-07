@@ -2,6 +2,9 @@
 require_once "dompdf/autoload.inc.php";
 require_once "conexion.php";
 require_once "ImpresionTrampas.php";
+
+use Dompdf\Css\Style;
+use Dompdf\Css\Stylesheet;
 use Dompdf\Dompdf;
 
 // instantiate and use the dompdf class
@@ -24,8 +27,16 @@ $datos = array(
 $dompdf->loadHtml($plantilla->parsePagina($datos));
 
 // (Optional) Setup the paper size and orientation
-//$dompdf2->setPaper('A4', 'landscape');
-$dompdf->setPaper([0, 0, 1000, 800]);
+$dompdf->setPaper('A4', 'landscape');
+$parsedCss = new Stylesheet($dompdf);
+$style = new Style($parsedCss);
+$style->set_color("chocolate");
+try {
+    $parsedCss->add_style("#h2_instalacion", $style);
+} catch (\Dompdf\Exception $e) {
+}
+$dompdf->setCss($parsedCss);
+//$dompdf->setPaper([0, 0, 1000, 800]);
 
 // Render the HTML as PDF
 $dompdf->render();

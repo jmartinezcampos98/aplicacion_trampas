@@ -64,6 +64,7 @@
                 <input type="hidden" name="nombre_cliente" value="' . $input_nombre_cliente . '"/>
                 <input class="margen_arriba" id="generar_pdf" required type="submit" value="Generar PDF">
             </form>
+            <button id="redirectButton" class="margen_izquierda">Previsualizar</button>
             <script>
                 document.getElementById("dia_inicio").onkeypress = validateNumber;
                 document.getElementById("mes_inicio").onkeypress = validateNumber;
@@ -71,6 +72,11 @@
                 document.getElementById("dia_fin").onkeypress = validateNumber;
                 document.getElementById("mes_fin").onkeypress = validateNumber;
                 document.getElementById("anyo_fin").onkeypress = validateNumber;
+            </script>
+            <script>
+                document.getElementById("redirectButton").onclick = function () {
+                    window.location.href = \'previsualizar.php\';
+                }
             </script>
             '
         );

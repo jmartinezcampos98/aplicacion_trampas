@@ -3,28 +3,103 @@
 
 class ImpresionTrampas
 {
-
-
-
     public function parsePagina(array $datos): string
     {
         $html_string = '';
         $html_string .= '<html>
         <head>
             <title>Herramienta de trampas</title>
-            <link rel="stylesheet" type="text/css" href="estilos/estilos.css" media="screen">
+            <style>
+                #pagina_exportada {
+                    background: white;
+                    display: block;
+                    margin: 0 auto 0.5cm;
+                    box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+                    height: 21cm;
+                    width: 29.7cm;
+                }
+                
+                img.imagen_plano {
+                    width: 80%;
+                    border: 10px double;
+                    position: relative;
+                }
+                
+                div.simple {
+                    width: 100%;
+                }
+                
+                span.texto_imagen {
+                    position: absolute;
+                    left: 270px;
+                    top: 140px;
+                    margin: auto;
+                    background-color: white;
+                    font-family: "Arial Black" ;
+                }
+                
+                span.texto_puntos {
+                    color: black;
+                    background-color: white;
+                    position: relative;
+                    bottom: 15px;
+                }
+                
+                span.punto_redondo {
+                    border-radius: 50%;
+                    display: inline-block;
+                    position: relative;
+                }
+                
+                span.interior {
+                    height: 15px;
+                    width: 15px;
+                    top: -17px;
+                    left: 2px;
+                }
+                
+                span.exterior {
+                    height: 19px;
+                    width: 19px;
+                }
+                
+                .margen_izquierda {
+                    position:relative;
+                    margin-left: 10px;
+                }
+                
+                .margen_arriba {
+                    position:relative;
+                    margin-top: 5px;
+                }
+                
+                .margen_abajo {
+                    position:relative;
+                    margin-bottom: 5px;
+                }
+                
+                .doble_margen_abajo {
+                    position: relative;
+                    margin-bottom: 15px;
+                }
+                
+                input.fecha {
+                    width: 50px;
+                    text-align: right;
+                }
+            </style>
             <script src="js/comportamiento.js"></script>
         </head>
         <body marginheight="0px" marginwidth="0px">
-            <div>
+            <div id="pagina_exportada">
                 <div class="simple">'.
                     '<img class="imagen_plano" <img class="imagen_plano" src="data:image/jpg;base64,'.base64_encode($datos["imagen"]).'"/>'.
                 '</div>
                 <div>
                     <br/>
                     <div class="margen_izquierda" action="index.php" method="POST">
-                        <h2>Cliente: ' . $datos["cliente"] . '</h2> 
-                        <h2>Instalación: ' . $datos["instalacion"] . '</h2>
+                        <h2 id="h2_cliente">Cliente: ' . $datos["cliente"] . '</h2> 
+                        <h2 id="h2_instalacion">Instalación: ' . $datos["instalacion"] . '</h2>
                     </div>
                     <!-- AQUI LOS PUNTOS -->
                 </div>
