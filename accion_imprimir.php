@@ -29,10 +29,17 @@ $dompdf->loadHtml($plantilla->parsePagina($datos));
 // (Optional) Setup the paper size and orientation
 $dompdf->setPaper('A4', 'landscape');
 $parsedCss = new Stylesheet($dompdf);
-$style = new Style($parsedCss);
-$style->set_color("chocolate");
+$style_test = new Style($parsedCss);
+$style_layout = new Style($parsedCss);
+// $style_punto = new Style($parsedCss);
+$style_test->set_color("chocolate");
+$style_layout->set_margin("0px");
+$style_layout->set_border_width("0px");
+// $style_punto->set_transform(50);
 try {
-    $parsedCss->add_style("#h2_instalacion", $style);
+    $parsedCss->add_style("#h2_instalacion", $style_test);
+    $parsedCss->add_style("html", $style_layout);
+    // $parsedCss->add_style("punto_interior_pdf", $style_punto);
 } catch (\Dompdf\Exception $e) {
 }
 $dompdf->setCss($parsedCss);

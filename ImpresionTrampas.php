@@ -21,15 +21,15 @@ class ImpresionTrampas
                 
                 img.imagen_plano {
                     width: 80%;
-                    border: 10px double;
-                    position: relative;
+                    border: 5px double;
+                    position: absolute;
                 }
                 
-                div.simple {
+                .simple {
                     width: 100%;
                 }
                 
-                span.texto_imagen {
+                .texto_imagen {
                     position: absolute;
                     left: 270px;
                     top: 140px;
@@ -38,27 +38,27 @@ class ImpresionTrampas
                     font-family: "Arial Black" ;
                 }
                 
-                span.texto_puntos {
+                .texto_puntos {
                     color: black;
                     background-color: white;
                     position: relative;
                     bottom: 15px;
                 }
                 
-                span.punto_redondo {
+                .punto_redondo {
                     border-radius: 50%;
                     display: inline-block;
-                    position: relative;
+                    position: absolute;
                 }
                 
-                span.interior {
+                .interior {
                     height: 15px;
                     width: 15px;
-                    top: -17px;
                     left: 2px;
+                    top: 2px;
                 }
                 
-                span.exterior {
+                .exterior {
                     height: 19px;
                     width: 19px;
                 }
@@ -82,33 +82,34 @@ class ImpresionTrampas
                     position: relative;
                     margin-bottom: 15px;
                 }
-                
-                input.fecha {
+                .contenedor_punto {
+                    position: absolute;
+                    z-index: 5;
+                }
+                .fecha {
                     width: 50px;
                     text-align: right;
+                }/* HACER!!
+                #h2_cliente {
+                    position: ;
                 }
+                #h2_instalacion {
+                
+                }
+                .etiqueta_info {
+                
+                }*/
             </style>
             <script src="js/comportamiento.js"></script>
         </head>
         <body marginheight="0px" marginwidth="0px">
             <div id="pagina_exportada">
-                <div class="simple">'.
-                    '<img class="imagen_plano" <img class="imagen_plano" src="data:image/jpg;base64,'.base64_encode($datos["imagen"]).'"/>'.
-                '</div>
-                <div>
-                    <br/>
-                    <div class="margen_izquierda" action="index.php" method="POST">
-                        <h2 id="h2_cliente">Cliente: ' . $datos["cliente"] . '</h2> 
-                        <h2 id="h2_instalacion">Instalación: ' . $datos["instalacion"] . '</h2>
-                    </div>
-                    <!-- AQUI LOS PUNTOS -->
-                </div>
-            </div>
-            <div id="puntos_pantalla">';
+                <div class="simple" style="position: relative">';
+
         foreach ($datos["puntos"] as $punto) {
             $id_instalacion = $punto["id_instalacion"];
-            $xCoord = $punto["x_coord"];
-            $yCoord = $punto["y_coord"];
+            $xCoord = $punto["x_coord"] * 0.85;
+            $yCoord = $punto["y_coord"] * 0.85;
             $color_dato = $punto["color"];
             switch ($color_dato) {
                 case 2:
@@ -126,27 +127,28 @@ class ImpresionTrampas
             }
             $nombre = $punto["lugar"];
             $html_string .=
-                '<div style="background-color: white; position: absolute; left: ' . $xCoord . 'px; top: ' . $yCoord . 'px;'.
-                    'width: 15px; height: 15px;">
-                ';
-                // '<span class="dot punto_redondo exterior" style="background-color: white;"></span>';
-            $html_string .=
+                '<div style="left: ' . $xCoord . 'px; top: ' . $yCoord . 'px;'.
+                'width: 15px; height: 15px;" class="contenedor_punto">';
+            $html_string .= '<span class="dot punto_redondo exterior" style="background-color: white;"></span>';
+            /*$html_string .=
                 '<span style="background-color: ' . $color_hex. '; border-radius: 50%; display: inline-block; '.
-                    'position: relative; height: 19px; width: 19px;"></span>
-                ';
-                // '<span class="dot punto_redondo interior" style="background-color: ' + color + ';"></span>'
-                /*
-                '<div style="position: absolute; left: ' . $xCoord . 'px; right: ' . $yCoord . 'px;'.
-                    'width: 15px; height: 15px; border-radius: 50%;">*/
-                $html_string .= '</div>
+                'position: relative; height: 19px; width: 19px; z-index: 5"></span>
+                ';*/
+            $html_string .= '<span class="dot punto_redondo interior" style="background-color: ' . $color_hex . ' ; right: 100px;"></span>';
+
+            /*$html_string .= '<div style="position: absolute; left: ' . $xCoord . 'px; right: ' . $yCoord . 'px;'.
+                'width: 15px; height: 15px; border-radius: 50%;">';*/
+            $html_string .= '</div>
                 ';
 
         }
-        // fin de puntosPantalla
-        $html_string .=
-            '</div>
-                ';
-        $html_string .= '</body>
+        $html_string .= '<img class="imagen_plano" src="data:image/jpg;base64,'.base64_encode($datos["imagen"]).'"/>';
+        $html_string .= '<h2 id="h2_cliente" class="margen_izquierda etiqueta_info">Cliente: ' . $datos["cliente"] . '</h2>';
+        $html_string .= '<h2 id="h2_instalacion" class="margen_izquierda etiqueta_info">Instalación: ' . $datos["instalacion"] . '</h2>';
+        $html_string .= '</div>
+                </div>
+            </div>
+        </body>
         </html>';
         return $html_string;
     }
