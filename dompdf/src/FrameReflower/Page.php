@@ -151,6 +151,7 @@ class Page extends AbstractFrameReflower
             $this->_check_callbacks("end_page_render", $child);
 
             if ($next_child) {
+                return;
                 $this->_frame->next_page();
             }
 

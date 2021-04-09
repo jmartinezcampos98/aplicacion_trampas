@@ -19,7 +19,7 @@ class ImpresionTrampas
                     width: 29.7cm;
                 }
                 
-                img.imagen_plano {
+                .imagen_plano {
                     width: 80%;
                     border: 5px double;
                     position: absolute;
@@ -41,7 +41,7 @@ class ImpresionTrampas
                 .texto_puntos {
                     color: black;
                     background-color: white;
-                    position: relative;
+                    position: absolute;
                     bottom: 15px;
                 }
                 
@@ -64,22 +64,22 @@ class ImpresionTrampas
                 }
                 
                 .margen_izquierda {
-                    position:relative;
+                    position:absolute;
                     margin-left: 10px;
                 }
                 
                 .margen_arriba {
-                    position:relative;
+                    position:absolute;
                     margin-top: 5px;
                 }
                 
                 .margen_abajo {
-                    position:relative;
+                    position:absolute;
                     margin-bottom: 5px;
                 }
                 
                 .doble_margen_abajo {
-                    position: relative;
+                    position: absolute;
                     margin-bottom: 15px;
                 }
                 .contenedor_punto {
@@ -89,16 +89,17 @@ class ImpresionTrampas
                 .fecha {
                     width: 50px;
                     text-align: right;
-                }/* HACER!!
-                #h2_cliente {
-                    position: ;
                 }
-                #h2_instalacion {
-                
+                #text_cliente {
+                    top: 700px;
+                    font-size: 26px;
+                    font-weight: bold;
+                }
+                #text_instalacion {
                 }
                 .etiqueta_info {
-                
-                }*/
+                    position: absolute;
+                }
             </style>
             <script src="js/comportamiento.js"></script>
         </head>
@@ -132,7 +133,7 @@ class ImpresionTrampas
             $html_string .= '<span class="dot punto_redondo exterior" style="background-color: white;"></span>';
             /*$html_string .=
                 '<span style="background-color: ' . $color_hex. '; border-radius: 50%; display: inline-block; '.
-                'position: relative; height: 19px; width: 19px; z-index: 5"></span>
+                'position: absolute; height: 19px; width: 19px; z-index: 5"></span>
                 ';*/
             $html_string .= '<span class="dot punto_redondo interior" style="background-color: ' . $color_hex . ' ; right: 100px;"></span>';
 
@@ -143,8 +144,8 @@ class ImpresionTrampas
 
         }
         $html_string .= '<img class="imagen_plano" src="data:image/jpg;base64,'.base64_encode($datos["imagen"]).'"/>';
-        $html_string .= '<h2 id="h2_cliente" class="margen_izquierda etiqueta_info">Cliente: ' . $datos["cliente"] . '</h2>';
-        $html_string .= '<h2 id="h2_instalacion" class="margen_izquierda etiqueta_info">Instalación: ' . $datos["instalacion"] . '</h2>';
+        $html_string .= '<span id="text_cliente" class="margen_izquierda etiqueta_info">Cliente: ' . $datos["cliente"] . ' <br> Instalación: ' . $datos["instalacion"] . '</span>';
+        $html_string .= '<span id="text_instalacion" class="margen_izquierda etiqueta_info"></span>';
         $html_string .= '</div>
                 </div>
             </div>
