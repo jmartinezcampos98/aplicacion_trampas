@@ -19,6 +19,21 @@ function obtener_puntos(PDO $conexion, $id_instalacion) : array
     return $consulta->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function obtener_puntos_entre_fechas(PDO $conexion, string $id_instalacion, array $despues_de, array $antes_de) : array
+{
+    $consulta = $conexion->prepare(
+         "SELECT p.id_instalacion, p.num_punto, avg(h.color) as color, p.lugar, p.x_coord, p.y_coord
+                FROM historial h 
+                    LEFT JOIN puntos p ON (h.id_instalacion = p.id_instalacion AND h.num_punto = p.num_punto)
+                WHERE p.id_instalacion = '" . $id_instalacion ."' 
+                    and h.fecha >= ('" . $despues_de['anyo'] . '-' . $despues_de['mes'] . '-' . $despues_de['dia'] . "') 
+                    AND h.fecha <= ('" . $antes_de['anyo'] . '-' . $antes_de['mes'] . '-' . $antes_de['dia'] . "')
+                GROUP BY p.id_instalacion, p.num_punto, p.lugar, p.x_coord, p.y_coord
+                ORDER BY p.id_instalacion, p.num_punto");
+    $consulta->execute();
+    return $consulta->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function obtener_imagen(PDO $conexion, $id_instalacion)
 {
     $consulta = $conexion->prepare("SELECT ins.id_instalacion, img.imagen 

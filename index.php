@@ -157,7 +157,7 @@
                 $yCoord = $punto["y_coord"];
                 $color_dato = $punto["color"];
                 switch ($color_dato) {
-                    case 2:
+                    case 0:
                         // Verde
                         $color_hex = "#008000";
                         break;

@@ -3,7 +3,7 @@
 
 class ImpresionTrampas
 {
-    public function parsePagina(array $datos): string
+    public function parsePagina(array $datos, array $fecha_inicio, array $fecha_fin): string
     {
         $html_string = '';
         $html_string .= '<html>
@@ -20,7 +20,6 @@ class ImpresionTrampas
                 }
                 
                 .imagen_plano {
-                    width: 80%;
                     border: 5px double;
                     position: absolute;
                 }
@@ -42,7 +41,7 @@ class ImpresionTrampas
                     color: black;
                     background-color: white;
                     position: absolute;
-                    bottom: 15px;
+                    top: 20px;
                 }
                 
                 .punto_redondo {
@@ -92,7 +91,7 @@ class ImpresionTrampas
                 }
                 #text_cliente {
                     top: 700px;
-                    font-size: 26px;
+                    font-size: 24px;
                     font-weight: bold;
                 }
                 #text_instalacion {
@@ -106,14 +105,13 @@ class ImpresionTrampas
         <body marginheight="0px" marginwidth="0px">
             <div id="pagina_exportada">
                 <div class="simple" style="position: relative">';
-
         foreach ($datos["puntos"] as $punto) {
-            $id_instalacion = $punto["id_instalacion"];
-            $xCoord = $punto["x_coord"] * 0.85;
-            $yCoord = $punto["y_coord"] * 0.85;
-            $color_dato = $punto["color"];
-            switch ($color_dato) {
-                case 2:
+            $xCoord = $punto["x_coord"];
+            $yCoord = $punto["y_coord"];
+            $color_punto = $punto["color"];
+            $nombre_punto = $punto["lugar"];
+            switch ($color_punto) {
+                case 0:
                     // Verde
                     $color_hex = "#008000";
                     break;
@@ -136,15 +134,20 @@ class ImpresionTrampas
                 'position: absolute; height: 19px; width: 19px; z-index: 5"></span>
                 ';*/
             $html_string .= '<span class="dot punto_redondo interior" style="background-color: ' . $color_hex . ' ; right: 100px;"></span>';
-
+            $html_string .= '<span class="texto_puntos">' . $nombre_punto . '</span>';
             /*$html_string .= '<div style="position: absolute; left: ' . $xCoord . 'px; right: ' . $yCoord . 'px;'.
                 'width: 15px; height: 15px; border-radius: 50%;">';*/
-            $html_string .= '</div>
-                ';
+            $html_string .= '</div>';
 
         }
         $html_string .= '<img class="imagen_plano" src="data:image/jpg;base64,'.base64_encode($datos["imagen"]).'"/>';
-        $html_string .= '<span id="text_cliente" class="margen_izquierda etiqueta_info">Cliente: ' . $datos["cliente"] . ' <br> Instalación: ' . $datos["instalacion"] . '</span>';
+        $html_string .= '<span id="text_cliente" class="margen_izquierda etiqueta_info">
+            Cliente: ' . $datos["cliente"]
+            . ' <br> Instalación: ' . $datos["instalacion"]
+            . '<br> Fechas: desde el día ' .  $fecha_inicio["dia"] . "-" . $fecha_inicio["mes"] . "-" . $fecha_inicio["anyo"]
+            . ' hasta el día ' .  $fecha_fin["dia"] . "-" . $fecha_fin["mes"] . "-" . $fecha_fin["anyo"]
+            . '</span>'
+        ;
         $html_string .= '<span id="text_instalacion" class="margen_izquierda etiqueta_info"></span>';
         $html_string .= '</div>
                 </div>

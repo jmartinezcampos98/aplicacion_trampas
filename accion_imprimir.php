@@ -16,15 +16,38 @@ $input_id_cliente = $_POST['id_cliente'];
 $input_nombre_cliente = $_POST['nombre_cliente'];
 $input_instalacion = $_POST['id_instalacion'];
 
+$fecha_inicio = [
+    'anyo' => $_POST['anyo_inicio'],
+    'mes' => $_POST['mes_inicio'],
+    'dia' => $_POST['dia_inicio'],
+];
+$fecha_fin = [
+    'anyo' => $_POST['anyo_fin'],
+    'mes' => $_POST['mes_fin'],
+    'dia' => $_POST['dia_fin'],
+];
+
 $conexion = abrir_conexion();
 $datos = array(
     "imagen" => obtener_imagen($conexion, $input_instalacion),
     "cliente" => $input_nombre_cliente,
     "instalacion" => $input_instalacion,
-    "puntos" => obtener_puntos($conexion, $input_instalacion)
+    "puntos" => obtener_puntos_entre_fechas($conexion, $input_instalacion, $fecha_inicio, $fecha_fin)
 );
 
-$dompdf->loadHtml($plantilla->parsePagina($datos));
+for ($i = 0; $i < sizeof($datos['puntos']); $i++) {
+    if ($datos['puntos'][$i]['color'] == 0) {
+        $datos['puntos'][$i]['color'] = "0";
+    } else if ($datos['puntos'][$i]['color'] == 2) {
+        $datos['puntos'][$i]['color'] = "2";
+    } else {
+        $datos['puntos'][$i]['color'] = "1";
+    }
+}
+
+$puntos_debug = obtener_puntos($conexion, $input_instalacion);
+
+$dompdf->loadHtml($plantilla->parsePagina($datos, $fecha_inicio, $fecha_fin));
 
 // (Optional) Setup the paper size and orientation
 $dompdf->setPaper('A4', 'landscape');
