@@ -5,64 +5,49 @@ function abrir_conexion(): PDO
     return new PDO("mysql:host=localhost;dbname=trampas", "root", "");
 }
 
-function obtener_puntos(PDO $conexion, $id_instalacion) : array
+function obtener_datos_mapa(PDO $conexion, string $id_cliente, string $id_instalacion, string $id_zona): ?array
 {
-    $consulta = $conexion->prepare(
-         "SELECT h.id_instalacion, h.num_punto, h.color, p.lugar, p.x_coord, p.y_coord 
-                FROM historial h 
-                    LEFT JOIN puntos p ON (h.id_instalacion = p.id_instalacion AND h.num_punto = p.num_punto)
-                WHERE (H.ID_INSTALACION, H.NUM_PUNTO, H.FECHA) IN (
-                    SELECT sub.id_instalacion, sub.num_punto, MAX(sub.fecha) FROM historial sub GROUP BY sub.id_instalacion, sub.num_punto
-                ) AND p.id_instalacion = '" . $id_instalacion . "'
-                ORDER BY p.id_instalacion, p.num_punto");
+    $sql = "SELECT ID_MAPA, IMAGEN "
+        ." FROM MAPAS "
+        ." WHERE CLIENTE = '" . $id_cliente . "' "
+        ." AND INSTALACION = '" . $id_instalacion . "' "
+        ." AND ZONA = '" . $id_zona . "'";
+    $consulta = $conexion->prepare($sql);
+    $consulta->execute();
+    $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+    return $resultado ?? null;
+}
+
+function obtener_puntos(PDO $conexion, int $id_mapa) : array
+{
+    $sql = "SELECT ID_MAPA, NUM_PUNTO, TIPO, NOMBRE, X_COORD, Y_COORD "
+        ." FROM PUNTOS "
+        ." WHERE ID_MAPA = '" . $id_mapa . "'"
+        ." ORDER BY ID_MAPA, NUM_PUNTO";
+    $consulta = $conexion->prepare($sql);
     $consulta->execute();
     return $consulta->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function obtener_puntos_entre_fechas(PDO $conexion, string $id_instalacion, array $despues_de, array $antes_de) : array
-{
-    $consulta = $conexion->prepare(
-         "SELECT p.id_instalacion, p.num_punto, avg(h.color) as color, p.lugar, p.x_coord, p.y_coord
-                FROM historial h 
-                    LEFT JOIN puntos p ON (h.id_instalacion = p.id_instalacion AND h.num_punto = p.num_punto)
-                WHERE p.id_instalacion = '" . $id_instalacion ."' 
-                    and h.fecha >= ('" . $despues_de['anyo'] . '-' . $despues_de['mes'] . '-' . $despues_de['dia'] . "') 
-                    AND h.fecha <= ('" . $antes_de['anyo'] . '-' . $antes_de['mes'] . '-' . $antes_de['dia'] . "')
-                GROUP BY p.id_instalacion, p.num_punto, p.lugar, p.x_coord, p.y_coord
-                ORDER BY p.id_instalacion, p.num_punto");
-    $consulta->execute();
-    return $consulta->fetchAll(PDO::FETCH_ASSOC);
-}
 
-function obtener_imagen(PDO $conexion, $id_instalacion)
+function borrar_puntos_mapa(PDO $conexion, int $id_mapa, int $num_punto) : void
 {
-    $consulta = $conexion->prepare("SELECT ins.id_instalacion, img.imagen 
-                    FROM instalaciones ins LEFT JOIN imagenes img ON ins.id_instalacion = img.id_instalacion
-                    WHERE ins.id_instalacion = '" . $id_instalacion . "'");
-    $consulta->execute();
-    $array_con_imagen = $consulta->fetch(PDO::FETCH_ASSOC);
-    return isset($array_con_imagen['imagen']) ? $array_con_imagen['imagen'] : null;
-}
-
-// Tan solo
-function borrar_puntos_instalacion(PDO $conexion, $id_instalacion)
-{
-    $borrado_config = $conexion->prepare(" " .
-        "DELETE FROM puntos " .
-        "WHERE id_instalacion = '" . $id_instalacion . "'");
+    $sql = "DELETE FROM PUNTOS WHERE ID_MAPA = '" . $id_mapa . "' AND NUM_PUNTO = '" . $num_punto . "'";
+    $borrado_config = $conexion->prepare($sql);
     $borrado_config->execute();
 }
 
-// Tan solo actualiza la configuración, no borra el historial
-function insertar_puntos(PDO $conexion, $num_punto, $id_instalacion, $x_coord, $y_coord, $lugar)
+
+function insertar_punto(PDO $conexion, int $id_mapa, int $num_punto,
+                        string $tipo, string $nombre, int $x_coord, int $y_coord) : void
 {
-    $insercion = $conexion->prepare(
-        "INSERT INTO PUNTOS (NUM_PUNTO, ID_INSTALACION, X_COORD, Y_COORD, LUGAR) VALUES "
-        . "('$num_punto',"
-        . "'$id_instalacion',"
-        . "'$x_coord',"
-        . "'$y_coord',"
-        . "'$lugar')"
-    );
+    $sql = "INSERT INTO PUNTOS (ID_MAPA, NUM_PUNTO, TIPO, NOMBRE, X_COORD, Y_COORD) VALUES "
+        ." ('" . $id_mapa . "', "
+        . " '" . $num_punto . "', "
+        . " '" . $tipo . "', "
+        . " '" . $nombre . "', "
+        . " '" . $x_coord . "', "
+        . " '" . $y_coord . "')";
+    $insercion = $conexion->prepare($sql);
     $insercion->execute();
 }

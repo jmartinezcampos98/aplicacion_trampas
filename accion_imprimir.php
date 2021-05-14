@@ -29,7 +29,7 @@ $fecha_fin = [
 
 $conexion = abrir_conexion();
 $datos = array(
-    "imagen" => obtener_imagen($conexion, $input_instalacion),
+    "imagen" => obtener_datos_mapa($conexion, $input_instalacion),
     "cliente" => $input_nombre_cliente,
     "instalacion" => $input_instalacion,
     "puntos" => obtener_puntos_entre_fechas($conexion, $input_instalacion, $fecha_inicio, $fecha_fin)

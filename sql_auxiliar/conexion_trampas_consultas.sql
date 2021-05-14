@@ -1,8 +1,60 @@
+--------------------------------------------------------------------
+-- 
+-- TABLAS DE LA BASE DE DATOS
+-- 
+--------------------------------------------------------------------
 SELECT * FROM INSTALACIONES;
 SELECT * FROM PUNTOS;
 SELECT * FROM IMAGENES;
 SELECT * FROM HISTORIAL;
 
+--------------------------------------------------------------------
+-- 
+-- CONSULTAS PARA LA OBTENCIÓN / ACTUALIZACIÓN DE DATOS
+-- 
+--------------------------------------------------------------------
+DELETE FROM puntos 
+        WHERE id_instalacion = '. $id_instalacion . '
+
+--
+INSERT INTO PUNTOS (NUM_PUNTO, ID_INSTALACION, X_COORD, Y_COORD, LUGAR) 
+VALUES . "('$num_punto',"
+        . "'$id_instalacion',"
+        . "'$x_coord',"
+        . "'$y_coord',"
+        . "'$lugar'")
+
+--
+SELECT ins.id_instalacion, img.imagen 
+FROM instalaciones ins LEFT JOIN imagenes img ON ins.id_instalacion = img.id_instalacion
+WHERE ins.id_instalacion = . "$id_instalacion"
+
+--
+SELECT h.id_instalacion, h.num_punto, h.color, p.lugar, p.x_coord, p.y_coord 
+FROM historial h 
+	LEFT JOIN puntos p ON (h.id_instalacion = p.id_instalacion AND h.num_punto = p.num_punto)
+WHERE (H.ID_INSTALACION, H.NUM_PUNTO, H.FECHA) IN (
+	SELECT sub.id_instalacion, sub.num_punto, MAX(sub.fecha) FROM historial sub GROUP BY sub.id_instalacion, sub.num_punto
+) AND p.id_instalacion = '" . $id_instalacion . "'
+ORDER BY p.id_instalacion, p.num_punto
+
+
+--
+SELECT p.id_instalacion, p.num_punto, avg(h.color) as color, p.lugar, p.x_coord, p.y_coord
+FROM historial h 
+	LEFT JOIN puntos p ON (h.id_instalacion = p.id_instalacion AND h.num_punto = p.num_punto)
+WHERE p.id_instalacion = '" . $id_instalacion ."' 
+	and h.fecha >= ('" . $despues_de['anyo'] . '-' . $despues_de['mes'] . '-' . $despues_de['dia'] . "') 
+	AND h.fecha <= ('" . $antes_de['anyo'] . '-' . $antes_de['mes'] . '-' . $antes_de['dia'] . "')
+GROUP BY p.id_instalacion, p.num_punto, p.lugar, p.x_coord, p.y_coord
+ORDER BY p.id_instalacion, p.num_punto
+
+--------------------------------------------------------------------
+-- 
+-- CONSULTAS UTILIZADAS DURANTE EL DESARROLLO 
+-- (NO ACTUALIZADAS, NO TODAS SE COMPORTAN COMO SE ESPERARÍA)
+-- 
+--------------------------------------------------------------------
 DELETE FROM PUNTOS WHERE ID_INSTALACION = 'NADA';
 
 INSERT INTO INSTALACIONES (ID_CLIENTE, NOMBRE_CLIENTE, ID_INSTALACION) VALUES ('12345678Z','CARLOS DÍAZ', 'BODEGAS_VEGAMAR_PATIO');
@@ -140,6 +192,5 @@ SELECT SUB.ID_INSTALACION, SUB.NUM_PUNTO, AVG(SUB.COLOR)
 FROM HISTORIAL SUB 
     -- LEFT JOIN PUNTOS P ON SUB.ID_INSTALACION = P.ID_INSTALACION
 GROUP BY SUB.ID_INSTALACION, SUB.NUM_PUNTO;
-
 
 
