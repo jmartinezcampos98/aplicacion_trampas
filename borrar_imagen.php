@@ -5,9 +5,14 @@ include("conexion.php");
 // Conecta a base de datos
 $conexion_datos = abrir_conexion();
 // Obtiene las variables del formulario
-$input_id_instalacion = $_POST['id_instalacion'];
+$input_cliente = $_POST['cliente'];
+$input_instalacion = $_POST['instalacion'];
+$input_zona = $_POST['zona'];
 // Borra imagen actualmente almacenada
-$borrado = "DELETE FROM IMAGENES WHERE ID_INSTALACION = '$input_id_instalacion'";
+$borrado = "UPDATE MAPAS SET IMAGEN = NULL "
+            ." WHERE CLIENTE = '$input_cliente'"
+                ." AND INSTALACION = '$input_instalacion'"
+                ." AND ZONA = '$input_zona'";
 $resultado = $conexion_datos ->query($borrado);
 //
 if ($resultado) {

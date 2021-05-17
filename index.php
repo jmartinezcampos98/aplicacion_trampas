@@ -1,7 +1,54 @@
+<?php
+function extraer_puntos(array $datos_mapas, string $id_cliente, string $id_instalacion, string $id_zona): ?array
+{
+    //get_object_vars(get_object_vars($datos_mapas[0])['instalaciones'][0])
+    return extraer_zona(extraer_instalacion(extraer_cliente($datos_mapas, $id_cliente), $id_instalacion), $id_zona);
+}
+
+function extraer_cliente(array $datos_mapas, string $id_cliente): ?array
+{
+    foreach ($datos_mapas as $cliente) {
+        if (get_object_vars($cliente)['cliente'] == $id_cliente) {
+            return get_object_vars($cliente)['instalaciones'];
+        }
+    }
+}
+
+function extraer_instalacion(array $datos_cliente, string $id_instalacion): ?array
+{
+    foreach ($datos_cliente as $instalacion) {
+        if (get_object_vars($instalacion)['instalacion'] == $id_instalacion) {
+            return get_object_vars($instalacion)['zonas'];
+        }
+    }
+}
+
+function extraer_zona(array $datos_instalacion, string $id_zona): ?array
+{
+    foreach ($datos_instalacion as $zona) {
+        if (get_object_vars($zona)['zona'] == $id_zona) {
+            return get_object_vars($zona)['puntos'];
+        }
+    }
+}
+
+function extraer_punto(array $datos_puntos, int $num_punto): ?array
+{
+    $punto_encontrado = null;
+    foreach ($datos_puntos as $punto) {
+        if ($punto['NUM_PUNTO'] == $num_punto) {
+            $punto_encontrado = $punto;
+        }
+    }
+    return $punto_encontrado;
+}
+?>
+
 <html>
 <head>
     <title>Herramienta de trampas</title>
     <link rel="stylesheet" type="text/css" href="estilos/estilos.css" media="screen">
+    <script type='text/javascript' src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="js/comportamiento.js"></script>
 </head>
 <body marginheight="0px" marginwidth="0px">
@@ -71,17 +118,17 @@
         // curl_close($curl_petition);
         $conexion = abrir_conexion();
         // Si hay POST, intenta obtener la imagen y los puntos
-        $datos_mapa = null;
+        $imagen_mapa = null;
         $datos_puntos = array();
         if ($post_instalacion) {
-            $datos_mapa = obtener_datos_mapa($conexion, $post_cliente, $post_instalacion, $post_zona);
-            if ($datos_mapa != null && $id_mapa = $datos_mapa['ID_MAPA']) {
+            $imagen_mapa = obtener_datos_mapa($conexion, $post_cliente, $post_instalacion, $post_zona);
+            if ($imagen_mapa != null && $id_mapa = $imagen_mapa['ID_MAPA']) {
                 $datos_puntos = obtener_puntos($conexion, $id_mapa);
             }
         }
         // Dibuja la imagen
         $div_imagen = '<div class="simple" onclick="break_function()">';
-        if (($imagen_bd = $datos_mapa['IMAGEN']) != null) {
+        if (($imagen_bd = $imagen_mapa['IMAGEN']) != null) {
             $div_imagen .= '<img class="imagen_plano" src="data:image/jpg;base64,'.base64_encode($imagen_bd).'"/>';
         } else {
             $div_imagen .= '<img class="imagen_plano" src="imagenes/no_imagen.jpeg"/>';
@@ -198,86 +245,117 @@
         </form>
 
         <?php
-        /*
         // Si se ha indicado un cliente e instalacion a través de POST
-        if ($post_id_cliente != null && $post_id_instalacion != null) {
+        if ($post_cliente != null && $post_instalacion != null && $post_zona != null) {
             // Si la instalación en cuestión tiene una imagen vinculada
-            if ($datos_mapa) {
-                echo('<span class="margen_izquierda"><b>Puede actualizar la imagen de la instalacion ' . $post_id_instalacion . ' a partir de un fichero en su equipo.</b></span>');
+            if (($imagen_bd = $imagen_mapa['IMAGEN']) != null) {
+                echo('<span class="margen_izquierda"><b>Puede actualizar la imagen del mapa actual a partir de un fichero en su equipo.</b></span>');
             } else {
                 echo('<span class="margen_izquierda"><b>No existe imagen en base de datos. Puede insertarla a partir de un fichero en su equipo.</b></span>');
             }
             echo('
                 <form class="margen_izquierda" action="guardar_imagen.php" method="POST" enctype="multipart/form-data">
                     <input type="file" required name="imagen"/>
-                    <input type="hidden" name="cliente" value="' . $post_id_cliente . '"/>
-                    <input type="hidden" name="instalacion" value="' . $post_id_instalacion . '"/>
+                    <input type="hidden" name="cliente" value="' . $post_cliente . '"/>
+                    <input type="hidden" name="instalacion" value="' . $post_instalacion . '"/>
+                    <input type="hidden" name="zona" value="' . $post_zona . '"/>
                     <input type="submit" value="Actualizar imagen"/>
                 </form>');
             // Si hay imagen vinculada, se puede borrar
-            if ($datos_mapa) {
+            if ($imagen_mapa) {
                 echo('
-                    <form class="margen_izquierda" action="borrar_imagen.php" method="POST">
-                        <label>Puede borrar la imagen actual pulsando este botón:</label>
-                        <input type="hidden" name="cliente" value="' . $post_id_cliente . '"/>
-                        <input type="hidden" name="instalacion" value="' . $post_id_instalacion . '"/>
-                        <input type="submit" value="Borrar imagen de instalación" 
-                            onclick="return confirm(' . addslashes("Si borras la imagen, se borrarán también los puntos asignados a esta.") . ')"/>
-                    </form>');
+                    <div>
+                        <form class="margen_izquierda" action="borrar_imagen.php" method="POST" id="borrar_imagen_form">
+                            <label>Puede borrar la imagen actual pulsando este botón:</label>
+                            <input type="hidden" name="cliente" value="' . $post_cliente . '"/>
+                            <input type="hidden" name="instalacion" value="' . $post_instalacion . '"/>
+                            <input type="hidden" name="zona" value="' . $post_zona . '"/>
+                        </form>
+                        <button class="margen_izquierda" id="boton_borrar" value="Borrar imagen de instalación" onclick="pedirConfirmacion();">Borrar imagen de instalación</button>
+                    </div>');
             }
         }
         ?>
         <?php
-        if ($datos_mapa) {
+        if ($imagen_mapa) {
             echo('
                 <div class="margen_izquierda">
                     <button onclick="guardarPuntos()">Guardar estado puntos</button> <span id="estadoGuardar"></span>
                     <form class="margen_arriba" action="pagina_exportar_pdf.php" method="POST">
-                        <input type="hidden" name="cliente" value="' . $post_id_cliente . '"/>
-                        <input type="hidden" name="nombre_cliente" value="' . $input_nombre_cliente . '"/>
-                        <input type="hidden" name="instalacion" value="' . $post_id_instalacion . '"/>
-                        <input type="submit" value="Exportar PDF">
+                        <input type="hidden" name="cliente" value="' . $post_cliente . '"/>
+                        <input type="hidden" name="instalacion" value="' . $post_instalacion . '"/>
+                        <input type="hidden" name="zona" value="' . $post_zona . '"/>
+                        <input type="submit" style="visibility: hidden" value="Exportar PDF">
                     </form>
                     
                 </div>
             ');
-        }*/
+        }
         ?>
-
+    <style>
+        #boton_borrar {
+            position: relative;
+            top: -35px;
+            left: 330px;
+        }
+    </style>
+    <script>
+        function pedirConfirmacion() {
+            if (confirm('Si borras la imagen, se borrará también la posición de los puntos asignados a esta.')) {
+                document.getElementById('borrar_imagen_form').submit();
+            }
+        }
+    </script>
     </div>
     <div id="puntosPantalla">
     </div>
     <div id="inicializacionPuntos">
         <?php
-        /*
-        if ($datos_mapa) {
-            foreach ($datos_puntos as $punto) {
-                $id_instalacion = $punto["instalacion"];
-                $xCoord = $punto["x_coord"];
-                $yCoord = $punto["y_coord"];
-                $color_dato = $punto["color"];
-                switch ($color_dato) {
-                    case 0:
-                        // Verde
-                        $color_hex = "#008000";
-                        break;
-                    case 1:
-                        // Amarillo
-                        $color_hex = "#FFFF00";
-                        break;
-                    default:
-                        // Rojo
-                        $color_hex = "#FF0000";
-                        break;
+
+
+        // $datos_puntos_api = $imagen_mapa[];
+        if ($imagen_mapa) {
+            $puntos_curl = extraer_puntos($datos_mapas, $post_cliente, $post_instalacion, $post_zona);
+            foreach ($puntos_curl as $punto_curl) {
+
+                $punto_curl = get_object_vars($punto_curl);
+                $punto_bd = extraer_punto($datos_puntos, $punto_curl['num_punto']);
+                if ($punto_bd == null) {
+                    $punto_bd = insertar_punto($conexion, $imagen_mapa['ID_MAPA'], $punto_curl['num_punto'], $punto_curl['tipo'],
+                        $punto_curl['nombre'], 0, 0);
                 }
-                $nombre = $punto["lugar"];
-                echo ('<script type="text/javascript"> crear('
-                    . $xCoord . ', ' . $yCoord . ', "'
-                    . $color_hex . '", "' . $nombre . '", "' . $id_instalacion
-                    . '"); </script>');
+                // TIPO, NOMBRE, ESTADO
+                if ($punto_bd) {
+                    $punto_bd['TIPO'] = $punto_curl['tipo'];
+                    $punto_bd['NOMBRE'] = $punto_curl['nombre'];
+                    $punto_bd['ESTADO'] = $punto_curl['estado'];
+                    $id_mapa = $punto_bd["ID_MAPA"];
+                    $xCoord = $punto_bd["X_COORD"];
+                    $yCoord = $punto_bd["Y_COORD"];
+                    $color_dato = $punto_bd["ESTADO"];
+                    $tipo_punto = $punto_bd["TIPO"];
+                    switch ($color_dato) {
+                        case 'green':
+                            // Verde
+                            $color_hex = "#008000";
+                            break;
+                        case 'yellow':
+                            // Amarillo
+                            $color_hex = "#FFFF00";
+                            break;
+                        default:
+                            // Rojo
+                            $color_hex = "#FF0000";
+                            break;
+                    }
+                    $nombre = $punto_bd["NOMBRE"];
+                    echo ('<script type="text/javascript"> crear('
+                        . $xCoord . ', ' . $yCoord . ', "'
+                        . $color_hex . '", "' . $nombre . '", "' . $id_mapa. '", "' . $tipo_punto
+                        . '"); </script>');
+                }
             }
         }
-        */
         ?>
     </div>
 </body>

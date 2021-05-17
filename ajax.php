@@ -1,35 +1,29 @@
 <?php
 require "conexion.php";
 $conexion = abrir_conexion();
-$entrada = $_GET['q'];
-$puntos = explode('+', $entrada);
-$error = false;
+$puntos = $_POST['puntos'];
+$mapa = $_POST['id_mapa'];
+$exito = true;
 // Borra todos los puntos de la instalacion
-if (isset($puntos[0])) {
-    $datos = explode(':', $puntos[0]);
-    if (isset($datos[1])) {
-        borrar_puntos_mapa($conexion, $datos[1]);
-    } else {
-        $error = $error || true;
-    }
+if (isset($puntos) && sizeof($puntos) >= 1) {
+    borrar_puntos_mapa($conexion, $mapa);
 }
 
 foreach ($puntos as $punto) {
-    $datos = explode(':', $punto);
     // $conexion, $num_punto, $id_instalacion, $x_coord, $y_coord, $lugar
-    if (isset($datos[0]) && isset($datos[1]) && isset($datos[2]) && isset($datos[3]) && isset($datos[4])) {
-        insertar_punto($conexion, $datos[0], $datos[1], $datos[2], $datos[3], $datos[4]);
+    if (isset($punto['num_punto']) && isset($punto['tipo']) && isset($punto['nombre']) && isset($punto['x_coord']) && isset($punto['y_coord'])) {
+        // int $id_mapa, int $num_punto, string $tipo, string $nombre, int $x_coord, int $y_coord
+        $exito = insertar_punto($conexion, $mapa, $punto['num_punto'], $punto['tipo'],
+            $punto['nombre'], $punto['x_coord'], $punto['y_coord']) && $exito;
     } else {
-        $error = $error || true;
+        $exito = false;
     }
 }
 
-if ($error) {
-    echo("Problema al insertar puntos");
+if ($exito) {
+    $message = ['message'=> "Puntos guardados"];
 } else {
-    echo("Puntos guardados");
+    $message = ['message'=> "Problema al insertar puntos"];
 }
+echo(json_encode($message));
 
-
-
-?>

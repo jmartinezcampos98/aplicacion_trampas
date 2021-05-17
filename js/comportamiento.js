@@ -3,20 +3,17 @@
 var mousePosition;
 var offset = [0,0];
 var div;
-var tagLabels = [];
 var tagElements = [];
 var tagFlags = [];
 var cont = 0;
-var vectorInputs = [];
-var vectorInputsName = [];
 var coordPuntos = []
 var puntoSeleccionado = null;
 
-function crearVacio(instalacion) {
-    crear(0, 0, "red", "Almacén", instalacion);
+function crearVacio(id_mapa) {
+    crear(0, 0, "red", "Almacén", id_mapa, "");
 }
 
-function crear(left, top, color, name, instalacion){
+function crear(left, top, color, name, id_mapa, tipo_punto){
 
     // var nuevo = document.getElementById("puntosPantalla").appendChild("div");
 
@@ -50,7 +47,8 @@ function crear(left, top, color, name, instalacion){
         color : color,
         name : name,
         number : cont,
-        instalacion : instalacion
+        id_mapa : id_mapa,
+        tipo_punto: tipo_punto
     });
 
     tagElements.push(divPunto);
@@ -58,14 +56,8 @@ function crear(left, top, color, name, instalacion){
 
     divPunto.addEventListener('mousedown', function(e) {
         tagFlags[divPunto.className] = true;
-        //tagFlags.push(true);
-
         //
         puntoSeleccionado = divPunto;
-        // boton eliminar punto deja de estar desactivado
-        // actualiza parametros
-        // seleccionar lista color y activarla
-
         //
         offset = [
             divPunto.offsetLeft - e.clientX,
@@ -101,46 +93,62 @@ document.addEventListener('mousemove', function(event) {
 
             tagElements[i].style.left = (mousePosition.x + offset[0]) + 'px';
             tagElements[i].style.top  = (mousePosition.y + offset[1]) + 'px';
-            // x_input.value = (mousePosition.x + offset[0]) + 'px';
-            // y_input.value = (mousePosition.y + offset[1]) + 'px';
-
-            // tagLabels[i].style.left = (mousePosition.x + offset[0]) + 'px';
-            // tagLabels[i].style.top  = (mousePosition.y + offset[1] - 20) + 'px';
         }
     }
 }, true);
 
-function actualizaParametrosPunto() {
-    // cambia texto coordX
-    // cambia texto coordY
-    // cambia texto lugar
-    // cambia seleccionable option color
-}
-
-function eliminarPunto() {
-    puntoSeleccionado = null;
-    // seleccionar boton eliminar y desactivarlo
-    // seleccionar lista color y desactivarla
-    // enviar orden para borrar de base de datos
-    // actualizar el html para quitarlo
-    // actualiza parametros
-}
-
-function cambiarColor() {
-    // actualiza el color del punto seleccionado
-}
-
 function guardarPuntos() {
     let cadenaEnvio = "";
+    let puntos = [];
+    let id_mapa;
     for (i = 0; i < coordPuntos.length; i++) {
         // orden de parametros -> $num_punto, $id_instalacion, $x_coord, $y_coord, $lugar, $color
-        cadenaEnvio += (coordPuntos[i].number + ":" + coordPuntos[i].instalacion + ":" + coordPuntos[i].x + ":" + coordPuntos[i].y + ":" + coordPuntos[i].name);
+        cadenaEnvio += (coordPuntos[i].number + ":" + coordPuntos[i].id_mapa + ":" + coordPuntos[i].x + ":" + coordPuntos[i].y + ":" + coordPuntos[i].name);
+        id_mapa = coordPuntos[i].id_mapa;
+        puntos.push({
+            'num_punto': coordPuntos[i].number,
+            'tipo': coordPuntos[i].tipo_punto,
+            'nombre': coordPuntos[i].name,
+            'x_coord': coordPuntos[i].x,
+            'y_coord': coordPuntos[i].y,
+        });
+
         // Si no es el último punto, añade uno más
         if (i !== coordPuntos.length - 1) {
             cadenaEnvio += "+";
         }
     }
+    /*
+    $.post('ajax.php',
+        {puntos: puntos},
+        function (data, status) {
+            const date = new Date();
+            document.getElementById("estadoGuardar").innerHTML = this.responseText + ", a las "
+                + date.getHours() + "h " + date.getMinutes() + "min " + date.getSeconds() + "s ";
+        }
+    );
+    */
 
+    function printResult(responseText) {
+        const date = new Date();
+        document.getElementById("estadoGuardar").innerHTML = responseText + ", a las "
+            + date.getHours() + "h " + date.getMinutes() + "min " + date.getSeconds() + "s ";
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '/aplicacion_trampas/ajax.php',
+        data: {id_mapa: id_mapa, puntos: puntos},
+        dataType: 'json',
+        success: function (result, status, xhr) {
+            printResult(result['message']);
+        },
+        error: function (xhr,status,error) {
+            printResult('Error guardando puntos');
+            console.log('Error de AJAX guardando puntos');
+        },
+    });
+/*
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
@@ -151,6 +159,8 @@ function guardarPuntos() {
     }
     xhttp.open("GET", "ajax.php?q=" + encodeURIComponent(cadenaEnvio), true);
     xhttp.send();
+
+ */
 }
 
 function validDateFormat(dateVal){

@@ -7,16 +7,19 @@ function getFakeJsonString(): string
         'num_punto' => 0,
         'tipo' => 'INSECTOS_VOLADORES',
         'nombre' => '001IV',
+        'estado' => 'green',
     ];
     $punto2 = [
         'num_punto' => 1,
         'tipo' => 'PORTACEBO SEGURIDAD',
         'nombre' => 'Z0',
+        'estado' => 'yellow',
     ];
     $punto3 = [
         'num_punto' => 2,
         'tipo' => 'MONITOREO',
         'nombre' => '001IV',
+        'estado' => 'yellow',
     ];
     $lista_puntos1 = [$punto1, $punto2, $punto3];
     $lista_puntos2 = [];
@@ -49,5 +52,6 @@ function getFakeJsonString(): string
         'instalaciones' => $lista_instalaciones2,
     ];
     $lista_clientes = [$cliente1, $cliente2];
-    return json_encode($lista_clientes);
+    $datos_codificados = json_encode($lista_clientes);
+    return $datos_codificados;
 }

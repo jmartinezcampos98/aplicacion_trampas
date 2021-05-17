@@ -5,14 +5,16 @@ include("conexion.php");
 // Conecta a base de datos
 $conexion_datos = abrir_conexion();
 // Obtiene las variables del formulario
-$input_id_instalacion = $_POST['id_instalacion'];
+$input_cliente = $_POST['cliente'];
+$input_instalacion = $_POST['instalacion'];
+$input_zona = $_POST['zona'];
 $input_imagen = addslashes(file_get_contents($_FILES['imagen']['tmp_name']));
 // Borra imagen actualmente almacenada
-$borrado = "DELETE FROM IMAGENES WHERE ID_INSTALACION = '$input_id_instalacion'";
-$conexion_datos ->query($borrado);
-// Almacena en base de datos
-$insercion = "INSERT INTO IMAGENES (ID_INSTALACION, IMAGEN) VALUES ('$input_id_instalacion', '$input_imagen')";
-$resultado = $conexion_datos->query($insercion);
+$actualizacion = "UPDATE MAPAS SET IMAGEN = '$input_imagen' "
+                ." WHERE CLIENTE = '$input_cliente'"
+                    ." AND INSTALACION = '$input_instalacion'"
+                    ." AND ZONA = '$input_zona'";
+$resultado = $conexion_datos->query($actualizacion);
 //
 if ($resultado) {
     echo "INSERTADO CON ÉXITO";
