@@ -10,7 +10,7 @@ $input_instalacion = $_POST['instalacion'];
 $input_zona = $_POST['zona'];
 $input_imagen = addslashes(file_get_contents($_FILES['imagen']['tmp_name']));
 // Borra imagen actualmente almacenada
-$actualizacion = "UPDATE MAPAS SET IMAGEN = '$input_imagen' "
+$actualizacion = "UPDATE mapas SET IMAGEN = '$input_imagen' "
                 ." WHERE CLIENTE = '$input_cliente'"
                     ." AND INSTALACION = '$input_instalacion'"
                     ." AND ZONA = '$input_zona'";
@@ -21,6 +21,6 @@ if ($resultado) {
 }
 
 header('HTTP/1.1 307 Temporary Redirect');
-header("Location: /aplicacion_trampas/index.php");
+header("Location: " . $_SERVER['HTTP_REFERER']);
 exit;
 

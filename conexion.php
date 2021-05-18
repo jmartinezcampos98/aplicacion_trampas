@@ -2,13 +2,13 @@
 
 function abrir_conexion(): PDO
 {
-    return new PDO("mysql:host=localhost;dbname=trampas", "root", "");
+    return new PDO("mysql:host=localhost;dbname=trampas", "query_user", "Query_33_Pass");
 }
 
 function obtener_datos_mapa(PDO $conexion, string $id_cliente, string $id_instalacion, string $id_zona): ?array
 {
     $sql = "SELECT ID_MAPA, IMAGEN "
-        ." FROM MAPAS "
+        ." FROM mapas "
         ." WHERE CLIENTE = '" . $id_cliente . "' "
         ." AND INSTALACION = '" . $id_instalacion . "' "
         ." AND ZONA = '" . $id_zona . "'";
@@ -21,7 +21,7 @@ function obtener_datos_mapa(PDO $conexion, string $id_cliente, string $id_instal
 function obtener_puntos(PDO $conexion, int $id_mapa) : array
 {
     $sql = "SELECT ID_MAPA, NUM_PUNTO, TIPO, NOMBRE, X_COORD, Y_COORD "
-        ." FROM PUNTOS "
+        ." FROM puntos "
         ." WHERE ID_MAPA = '" . $id_mapa . "'"
         ." ORDER BY ID_MAPA, NUM_PUNTO";
     $consulta = $conexion->prepare($sql);
@@ -32,14 +32,14 @@ function obtener_puntos(PDO $conexion, int $id_mapa) : array
 
 function borrar_puntos_mapa(PDO $conexion, int $id_mapa) : void
 {
-    $sql = "DELETE FROM PUNTOS WHERE ID_MAPA = '" . $id_mapa . "' ";
+    $sql = "DELETE FROM puntos WHERE ID_MAPA = '" . $id_mapa . "' ";
     $borrado_config = $conexion->prepare($sql);
     $borrado_config->execute();
 }
 
 function borrar_punto_mapa(PDO $conexion, int $id_mapa, int $num_punto) : void
 {
-    $sql = "DELETE FROM PUNTOS WHERE ID_MAPA = '" . $id_mapa . "' AND NUM_PUNTO = '" . $num_punto . "'";
+    $sql = "DELETE FROM puntos WHERE ID_MAPA = '" . $id_mapa . "' AND NUM_PUNTO = '" . $num_punto . "'";
     $borrado_config = $conexion->prepare($sql);
     $borrado_config->execute();
 }
@@ -47,7 +47,7 @@ function borrar_punto_mapa(PDO $conexion, int $id_mapa, int $num_punto) : void
 function insertar_punto(PDO $conexion, int $id_mapa, int $num_punto,
                         string $tipo, string $nombre, int $x_coord, int $y_coord) : array | bool
 {
-    $sql = "INSERT INTO PUNTOS (ID_MAPA, NUM_PUNTO, TIPO, NOMBRE, X_COORD, Y_COORD) VALUES "
+    $sql = "INSERT INTO puntos (ID_MAPA, NUM_PUNTO, TIPO, NOMBRE, X_COORD, Y_COORD) VALUES "
         ." ('" . $id_mapa . "', "
         . " '" . $num_punto . "', "
         . " '" . $tipo . "', "

@@ -137,7 +137,7 @@ function guardarPuntos() {
 
     $.ajax({
         type: 'POST',
-        url: '/aplicacion_trampas/ajax.php',
+        url: '/trampas/ajax.php',
         data: {id_mapa: id_mapa, puntos: puntos},
         dataType: 'json',
         success: function (result, status, xhr) {

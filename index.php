@@ -130,9 +130,11 @@ function extraer_punto(array $datos_puntos, int $num_punto): ?array
         $div_imagen = '<div class="simple" onclick="break_function()">';
         if (($imagen_bd = $imagen_mapa['IMAGEN']) != null) {
             $div_imagen .= '<img class="imagen_plano" src="data:image/jpg;base64,'.base64_encode($imagen_bd).'"/>';
+            $imagen_mostrada = true;
         } else {
             $div_imagen .= '<img class="imagen_plano" src="imagenes/no_imagen.jpeg"/>';
             $div_imagen .= '<span class="texto_imagen">No hay imagen</span>';
+            $imagen_mostrada = false;
         }
         $div_imagen .= '</div>';
         echo($div_imagen);
@@ -262,7 +264,7 @@ function extraer_punto(array $datos_puntos, int $num_punto): ?array
                     <input type="submit" value="Actualizar imagen"/>
                 </form>');
             // Si hay imagen vinculada, se puede borrar
-            if ($imagen_mapa) {
+            if ($imagen_mostrada) {
                 echo('
                     <div>
                         <form class="margen_izquierda" action="borrar_imagen.php" method="POST" id="borrar_imagen_form">
@@ -277,7 +279,7 @@ function extraer_punto(array $datos_puntos, int $num_punto): ?array
         }
         ?>
         <?php
-        if ($imagen_mapa) {
+        if ($imagen_mostrada) {
             echo('
                 <div class="margen_izquierda">
                     <button onclick="guardarPuntos()">Guardar estado puntos</button> <span id="estadoGuardar"></span>
@@ -311,10 +313,7 @@ function extraer_punto(array $datos_puntos, int $num_punto): ?array
     </div>
     <div id="inicializacionPuntos">
         <?php
-
-
-        // $datos_puntos_api = $imagen_mapa[];
-        if ($imagen_mapa) {
+        if ($imagen_mostrada) {
             $puntos_curl = extraer_puntos($datos_mapas, $post_cliente, $post_instalacion, $post_zona);
             foreach ($puntos_curl as $punto_curl) {
 
